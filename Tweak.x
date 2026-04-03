@@ -14,7 +14,7 @@ static NSTimeInterval lastHapticTime = 0;
 
 static void loadPrefs() {
     // Dynamically resolves the path regardless of RootHide randomizations
-    NSDictionary *prefs = [[NSDicNSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:ROOT_PATH_NS(@"/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist")];tionary alloc] initWithContentsOfFile:ROOT_PATH_NS("/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist")];
+    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:ROOT_PATH_NS(@"/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist")];
     
     if (prefs) {
         enabled = [prefs[@"enabled"] boolValue];
