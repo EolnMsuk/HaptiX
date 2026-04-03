@@ -37,8 +37,7 @@ This project is structured to be built with [Theos](https://github.com/theos/the
 2. Clone this repository:
    ```bash
    git clone [https://github.com/YOUR_USERNAME/HaptiX.git](https://github.com/YOUR_USERNAME/HaptiX.git)
-   cd HaptiX
-````
+   cd HaptiX````
 
 3.  Compile the `.deb` package:
     ```bash
