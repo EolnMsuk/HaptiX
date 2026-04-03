@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <rootless.h> // REQUIRED to find dynamic RootHide paths!
 
 // Preference variables
 static BOOL enabled = YES;
@@ -12,8 +13,9 @@ static BOOL hookScrolling = NO;
 static NSTimeInterval lastHapticTime = 0;
 
 static void loadPrefs() {
-    // Rootless preference path mapping
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist"];
+    // Dynamically resolves the path regardless of RootHide randomizations
+    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:ROOT_PATH_NS("/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist")];
+    
     if (prefs) {
         enabled = [prefs[@"enabled"] boolValue];
         feedbackStyle = [prefs[@"feedbackStyle"] integerValue];
