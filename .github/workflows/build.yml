@@ -16,7 +16,7 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: |
-          brew install ldid
+          brew install ldid dos2unix
 
       - name: 🛠️ Setup Theos
         run: |
@@ -25,13 +25,15 @@ jobs:
 
       - name: 📚 Download iOS SDKs
         run: |
-          # Delete the placeholder folder Theos created so Git doesn't panic
           rm -rf $HOME/theos/sdks
-          # Now clone the full SDK library into a fresh folder
           git clone https://github.com/theos/sdks.git $HOME/theos/sdks
 
       - name: 🏗️ Compile Tweak
         run: |
+          # Convert the control file to Unix line endings
+          dos2unix control
+          
+          # Build the package
           make package FINALPACKAGE=1
 
       - name: 📦 Upload .deb Artifact
