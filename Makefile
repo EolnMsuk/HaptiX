@@ -10,6 +10,7 @@ TWEAK_NAME = HaptiX
 HaptiX_FILES = Tweak.x
 HaptiX_CFLAGS = -fobjc-arc
 HaptiX_FRAMEWORKS = UIKit AudioToolbox
+HaptiX_LIBRARIES = root
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += haptixprefs
