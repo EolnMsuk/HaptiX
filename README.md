@@ -38,3 +38,27 @@ This project is structured to be built with [Theos](https://github.com/theos/the
    ```bash
    git clone [https://github.com/YOUR_USERNAME/HaptiX.git](https://github.com/YOUR_USERNAME/HaptiX.git)
    cd HaptiX
+````
+
+3.  Compile the `.deb` package:
+    ```bash
+    make package
+    ```
+4.  Install the resulting `.deb` file (found in the `packages` folder) via Sileo, Zebra, or Filza.
+
+**GitHub Actions:**
+If you fork this repository and enable GitHub Actions, the workflow will automatically compile the `.deb` file as an artifact upon every push.
+
+## ⚙️ Configuration
+
+Once installed, configure HaptiX directly from the native iOS **Settings** app.
+
+*We recommend disabling Apple's native keyboard haptics (Settings \> Sounds & Haptics \> Keyboard Feedback) to let HaptiX take over entirely and prevent overlapping feedback.*
+
+## 🧑‍💻 Author
+
+Developed by **eolnmsuk**
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
