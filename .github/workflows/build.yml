@@ -1,0 +1,35 @@
+name: Build iOS Tweak
+
+# This tells GitHub WHEN to run the compiler
+on:
+  push:
+    branches:
+      - main  # (Change this to 'master' if your default branch is called master)
+  workflow_dispatch: # This allows you to click a "Run Workflow" button manually in GitHub
+
+jobs:
+  build:
+    # We use a macOS server because it already has Apple's Xcode and iOS SDKs installed
+    runs-on: macos-latest 
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup Theos
+        run: |
+          # Download the official Theos build system to the temporary server
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          # Tell the server where Theos is located
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: 🏗️ Compile Tweak
+        run: |
+          # Run the standard Theos build command for a release build
+          make package FINALPACKAGE=1
+
+      - name: 📦 Upload .deb Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HaptiX-Rootless-Deb
+          path: packages/*.deb
