@@ -2,7 +2,7 @@ Package: com.eolnmsuk.haptix
 Name: HaptiX
 Depends: mobilesubstrate, preferenceloader
 Version: 1.0.0
-Architecture: iphoneos-arm64e
+Architecture: iphoneos-arm64
 Description: Advanced system-wide haptic customization for iOS 16.
 Maintainer: eolnmsuk
 Author: eolnmsuk
