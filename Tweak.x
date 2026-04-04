@@ -26,7 +26,8 @@ static BOOL isBlacklisted = NO;
 static BOOL readBoolPref(NSString *key, BOOL fallback) {
     CFPropertyListRef value = CFPreferencesCopyAppValue((__bridge CFStringRef)key, CFSTR("com.eolnmsuk.haptix"));
     if (value) {
-        BOOL result = [(NSNumber *)__bridge id(value) boolValue];
+        // CORRECTED LINE: Cast directly to NSNumber using __bridge
+        BOOL result = [(__bridge NSNumber *)value boolValue];
         CFRelease(value);
         return result;
     }
