@@ -24,31 +24,36 @@ static BOOL hookAppSwitcher = YES;
 static NSTimeInterval lastHapticTime = 0;
 static BOOL isBlacklisted = NO;
 
+// Generator caching to prevent delay/memory leaks
+static UIImpactFeedbackGenerator *hapticGenerator = nil;
+static NSInteger currentLoadedStyle = -1;
+
 // --- Load Preferences ---
 static void loadPrefs() {
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist"];
+    // NSUserDefaults initWithSuiteName safely bypasses app sandboxes!
+    NSUserDefaults *prefs = [[NSUserDefaults alloc] initWithSuiteName:@"com.eolnmsuk.haptix"];
     
     if (prefs) {
-        enabled = [prefs[@"enabled"] ?: @YES boolValue];
-        globalStyle = [prefs[@"globalStyle"] ?: @1 integerValue];
-        boostMode = [prefs[@"boostMode"] ?: @NO boolValue];
+        enabled = [prefs objectForKey:@"enabled"] ? [[prefs objectForKey:@"enabled"] boolValue] : YES;
+        globalStyle = [prefs objectForKey:@"globalStyle"] ? [[prefs objectForKey:@"globalStyle"] integerValue] : 1;
+        boostMode = [prefs objectForKey:@"boostMode"] ? [[prefs objectForKey:@"boostMode"] boolValue] : NO;
         
-        hookKeyboard = [prefs[@"hookKeyboard"] ?: @YES boolValue];
-        hookButtons = [prefs[@"hookButtons"] ?: @YES boolValue];
-        hookSwitches = [prefs[@"hookSwitches"] ?: @YES boolValue];
-        hookCells = [prefs[@"hookCells"] ?: @YES boolValue];
-        hookScrolling = [prefs[@"hookScrolling"] ?: @NO boolValue];
+        hookKeyboard = [prefs objectForKey:@"hookKeyboard"] ? [[prefs objectForKey:@"hookKeyboard"] boolValue] : YES;
+        hookButtons = [prefs objectForKey:@"hookButtons"] ? [[prefs objectForKey:@"hookButtons"] boolValue] : YES;
+        hookSwitches = [prefs objectForKey:@"hookSwitches"] ? [[prefs objectForKey:@"hookSwitches"] boolValue] : YES;
+        hookCells = [prefs objectForKey:@"hookCells"] ? [[prefs objectForKey:@"hookCells"] boolValue] : YES;
+        hookScrolling = [prefs objectForKey:@"hookScrolling"] ? [[prefs objectForKey:@"hookScrolling"] boolValue] : NO;
         
-        hookVolume = [prefs[@"hookVolume"] ?: @YES boolValue];
-        hookPower = [prefs[@"hookPower"] ?: @YES boolValue];
-        hookIcons = [prefs[@"hookIcons"] ?: @YES boolValue];
-        hookLockScreen = [prefs[@"hookLockScreen"] ?: @YES boolValue];
-        hookAppSwitcher = [prefs[@"hookAppSwitcher"] ?: @YES boolValue];
+        hookVolume = [prefs objectForKey:@"hookVolume"] ? [[prefs objectForKey:@"hookVolume"] boolValue] : YES;
+        hookPower = [prefs objectForKey:@"hookPower"] ? [[prefs objectForKey:@"hookPower"] boolValue] : YES;
+        hookIcons = [prefs objectForKey:@"hookIcons"] ? [[prefs objectForKey:@"hookIcons"] boolValue] : YES;
+        hookLockScreen = [prefs objectForKey:@"hookLockScreen"] ? [[prefs objectForKey:@"hookLockScreen"] boolValue] : YES;
+        hookAppSwitcher = [prefs objectForKey:@"hookAppSwitcher"] ? [[prefs objectForKey:@"hookAppSwitcher"] boolValue] : YES;
         
-        // AltList saves the bundle ID as a boolean key directly in the plist
+        // AltList check
         NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
         if (bundleID) {
-            isBlacklisted = [prefs[bundleID] boolValue];
+            isBlacklisted = [[prefs objectForKey:bundleID] boolValue];
         }
     }
 }
@@ -64,20 +69,28 @@ static void triggerHaptic() {
     
     // OVERDRIVE or RIGID bypass standard generation for instant hardware snap
     if (boostMode || globalStyle == 3) {
-        AudioServicesPlaySystemSound(boostMode ? 1521 : 1520); // 1520 = Pop (Rigid), 1521 = Vibrate (Overdrive)
+        AudioServicesPlaySystemSound(boostMode ? 1521 : 1520);
         return;
     }
     
-    UIImpactFeedbackStyle style = UIImpactFeedbackStyleMedium;
-    switch (globalStyle) {
-        case 0: style = UIImpactFeedbackStyleSoft; break;
-        case 1: style = UIImpactFeedbackStyleMedium; break;
-        case 2: style = UIImpactFeedbackStyleHeavy; break;
-    }
-    
-    UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:style];
-    [generator prepare];
-    [generator impactOccurred];
+    // Force UIImpactFeedbackGenerator onto the main thread to prevent silent drops
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImpactFeedbackStyle style = UIImpactFeedbackStyleMedium;
+        switch (globalStyle) {
+            case 0: style = UIImpactFeedbackStyleSoft; break;
+            case 1: style = UIImpactFeedbackStyleMedium; break;
+            case 2: style = UIImpactFeedbackStyleHeavy; break;
+        }
+        
+        // Cache the generator to eliminate startup latency, update only if user changed settings
+        if (!hapticGenerator || currentLoadedStyle != globalStyle) {
+            hapticGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:style];
+            currentLoadedStyle = globalStyle;
+        }
+        
+        [hapticGenerator prepare];
+        [hapticGenerator impactOccurred];
+    });
 }
 
 // ==========================================
@@ -86,11 +99,8 @@ static void triggerHaptic() {
 %group UIKitHooks
 
 %hook UIKeyboardImpl
-- (void)insertText:(id)arg1 {
-    %orig;
-    if (hookKeyboard) triggerHaptic();
-}
-- (void)deleteBackward {
+// Hooks the actual sound generation of the keyboard, capturing 100% of physical/virtual taps
+- (void)playKeyClickSound {
     %orig;
     if (hookKeyboard) triggerHaptic();
 }
@@ -123,13 +133,11 @@ static void triggerHaptic() {
 %end
 
 %hook UIScrollView
-// Hooking setContentOffset catches the exact frame it hits the boundary
 - (void)setContentOffset:(CGPoint)arg1 {
     if (hookScrolling && !isBlacklisted && enabled && self.isDragging) {
         CGFloat topBound = -self.adjustedContentInset.top;
         CGFloat bottomBound = self.contentSize.height - self.bounds.size.height + self.adjustedContentInset.bottom;
         
-        // Calculate if we were inside bounds on the last frame, but are out of bounds on this frame
         BOOL wasInBoundsY = (self.contentOffset.y > topBound && self.contentOffset.y < bottomBound);
         BOOL isOutOfBoundsY = (arg1.y <= topBound || arg1.y >= bottomBound);
         
@@ -148,38 +156,30 @@ static void triggerHaptic() {
 // ==========================================
 %group SpringBoardHooks
 
-// Hardware Volume Buttons
 %hook SBVolumeControl
 - (void)increaseVolume { %orig; if (hookVolume) triggerHaptic(); }
 - (void)decreaseVolume { %orig; if (hookVolume) triggerHaptic(); }
 %end
 
-// Hardware Power Button
 %hook SBLockHardwareButton
 - (void)singlePress { %orig; if (hookPower) triggerHaptic(); }
 %end
 
-// Lock/Unlock events
 %hook SBLockScreenManager
 - (void)lockUIFromSource:(int)arg1 withOptions:(id)arg2 { %orig; if (hookLockScreen) triggerHaptic(); }
 %end
 
-// Homescreen Icons
 %hook SBIconView
 - (void)setHighlighted:(BOOL)highlighted { %orig; if (hookIcons && highlighted) triggerHaptic(); }
 %end
 
-// Start of Home/App Switcher Swipe
 %hook SBHomeGesturePanGestureRecognizer
 - (void)setState:(long long)state {
     %orig;
-    if (state == 1 /* UIGestureRecognizerStateBegan */ && hookAppSwitcher) {
-        triggerHaptic();
-    }
+    if (state == 1 && hookAppSwitcher) triggerHaptic();
 }
 %end
 
-// App Switcher internal actions (Closing apps, swiping to other apps)
 %hook SBFluidSwitcherViewController
 - (void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
     %orig;
