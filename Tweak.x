@@ -1,8 +1,10 @@
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#define PLIST_PATH @"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist"
+
 // --- Preferences Variables ---
-static BOOL enabled = YES;
+static BOOL enabled = NO; // DEFAULT OFF PER REQUEST
 static NSInteger globalStyle = 1; 
 static BOOL boostMode = NO;
 
@@ -24,37 +26,40 @@ static BOOL hookAppSwitcher = YES;
 static NSTimeInterval lastHapticTime = 0;
 static BOOL isBlacklisted = NO;
 
-// Generator caching to prevent delay/memory leaks
-static UIImpactFeedbackGenerator *hapticGenerator = nil;
-static NSInteger currentLoadedStyle = -1;
-
 // --- Load Preferences ---
 static void loadPrefs() {
-    // NSUserDefaults initWithSuiteName safely bypasses app sandboxes!
-    NSUserDefaults *prefs = [[NSUserDefaults alloc] initWithSuiteName:@"com.eolnmsuk.haptix"];
+    // Reading directly from the rootless path. 
+    // Rootless sandbox explicitly allows this, whereas NSUserDefaults blocked 3rd party apps!
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:PLIST_PATH];
     
     if (prefs) {
-        enabled = [prefs objectForKey:@"enabled"] ? [[prefs objectForKey:@"enabled"] boolValue] : YES;
-        globalStyle = [prefs objectForKey:@"globalStyle"] ? [[prefs objectForKey:@"globalStyle"] integerValue] : 1;
-        boostMode = [prefs objectForKey:@"boostMode"] ? [[prefs objectForKey:@"boostMode"] boolValue] : NO;
+        enabled = prefs[@"enabled"] ? [prefs[@"enabled"] boolValue] : NO; 
+        globalStyle = prefs[@"globalStyle"] ? [prefs[@"globalStyle"] integerValue] : 1;
+        boostMode = prefs[@"boostMode"] ? [prefs[@"boostMode"] boolValue] : NO;
         
-        hookKeyboard = [prefs objectForKey:@"hookKeyboard"] ? [[prefs objectForKey:@"hookKeyboard"] boolValue] : YES;
-        hookButtons = [prefs objectForKey:@"hookButtons"] ? [[prefs objectForKey:@"hookButtons"] boolValue] : YES;
-        hookSwitches = [prefs objectForKey:@"hookSwitches"] ? [[prefs objectForKey:@"hookSwitches"] boolValue] : YES;
-        hookCells = [prefs objectForKey:@"hookCells"] ? [[prefs objectForKey:@"hookCells"] boolValue] : YES;
-        hookScrolling = [prefs objectForKey:@"hookScrolling"] ? [[prefs objectForKey:@"hookScrolling"] boolValue] : NO;
+        hookKeyboard = prefs[@"hookKeyboard"] ? [prefs[@"hookKeyboard"] boolValue] : YES;
+        hookButtons = prefs[@"hookButtons"] ? [prefs[@"hookButtons"] boolValue] : YES;
+        hookSwitches = prefs[@"hookSwitches"] ? [prefs[@"hookSwitches"] boolValue] : YES;
+        hookCells = prefs[@"hookCells"] ? [prefs[@"hookCells"] boolValue] : YES;
+        hookScrolling = prefs[@"hookScrolling"] ? [prefs[@"hookScrolling"] boolValue] : NO;
         
-        hookVolume = [prefs objectForKey:@"hookVolume"] ? [[prefs objectForKey:@"hookVolume"] boolValue] : YES;
-        hookPower = [prefs objectForKey:@"hookPower"] ? [[prefs objectForKey:@"hookPower"] boolValue] : YES;
-        hookIcons = [prefs objectForKey:@"hookIcons"] ? [[prefs objectForKey:@"hookIcons"] boolValue] : YES;
-        hookLockScreen = [prefs objectForKey:@"hookLockScreen"] ? [[prefs objectForKey:@"hookLockScreen"] boolValue] : YES;
-        hookAppSwitcher = [prefs objectForKey:@"hookAppSwitcher"] ? [[prefs objectForKey:@"hookAppSwitcher"] boolValue] : YES;
+        hookVolume = prefs[@"hookVolume"] ? [prefs[@"hookVolume"] boolValue] : YES;
+        hookPower = prefs[@"hookPower"] ? [prefs[@"hookPower"] boolValue] : YES;
+        hookIcons = prefs[@"hookIcons"] ? [prefs[@"hookIcons"] boolValue] : YES;
+        hookLockScreen = prefs[@"hookLockScreen"] ? [prefs[@"hookLockScreen"] boolValue] : YES;
+        hookAppSwitcher = prefs[@"hookAppSwitcher"] ? [prefs[@"hookAppSwitcher"] boolValue] : YES;
         
         // AltList check
         NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
         if (bundleID) {
-            isBlacklisted = [[prefs objectForKey:bundleID] boolValue];
+            isBlacklisted = prefs[bundleID] ? [prefs[bundleID] boolValue] : NO;
         }
+    } else {
+        // Safe defaults if file is completely wiped
+        enabled = NO; 
+        globalStyle = 1;
+        boostMode = NO;
+        isBlacklisted = NO;
     }
 }
 
@@ -67,29 +72,31 @@ static void triggerHaptic() {
     if (currentTime - lastHapticTime < 0.04) return; 
     lastHapticTime = currentTime;
     
-    // OVERDRIVE or RIGID bypass standard generation for instant hardware snap
-    if (boostMode || globalStyle == 3) {
-        AudioServicesPlaySystemSound(boostMode ? 1521 : 1520);
-        return;
-    }
-    
-    // Force UIImpactFeedbackGenerator onto the main thread to prevent silent drops
+    // Must run on main thread so 3rd party apps don't drop the vibration
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIImpactFeedbackStyle style = UIImpactFeedbackStyleMedium;
-        switch (globalStyle) {
-            case 0: style = UIImpactFeedbackStyleSoft; break;
-            case 1: style = UIImpactFeedbackStyleMedium; break;
-            case 2: style = UIImpactFeedbackStyleHeavy; break;
+        
+        if (boostMode) {
+            // Overdrive (1521 is a heavy multi-pulse hardware vibration)
+            AudioServicesPlaySystemSound(1521); 
+            return;
         }
         
-        // Cache the generator to eliminate startup latency, update only if user changed settings
-        if (!hapticGenerator || currentLoadedStyle != globalStyle) {
-            hapticGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:style];
-            currentLoadedStyle = globalStyle;
+        if (globalStyle == 3) {
+            // RIGID PROFILE: Bypasses standard generator for instant hardware 'Pop' (1520)
+            AudioServicesPlaySystemSound(1520);
+            return;
         }
         
-        [hapticGenerator prepare];
-        [hapticGenerator impactOccurred];
+        // ALL standard profiles now use the 'Rigid' style for a sharp, clicky feel, 
+        // we just scale the physical intensity of it.
+        CGFloat intensity = 0.5;
+        if (globalStyle == 0) intensity = 0.4;      // Soft
+        else if (globalStyle == 1) intensity = 0.7; // Med
+        else if (globalStyle == 2) intensity = 1.0; // Hard
+        
+        UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleRigid];
+        [generator prepare];
+        [generator impactOccurredWithIntensity:intensity];
     });
 }
 
@@ -99,12 +106,10 @@ static void triggerHaptic() {
 %group UIKitHooks
 
 %hook UIKeyboardImpl
-// Hooks the actual sound generation of the keyboard, capturing 100% of physical/virtual taps
 - (void)playKeyClickSound {
     %orig;
     if (hookKeyboard) triggerHaptic();
 }
-// Catches the continuous hold-to-delete action
 - (void)autoDelete {
     %orig;
     if (hookKeyboard) triggerHaptic();
