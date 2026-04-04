@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioToolbox.h>
-#import <rootless.h> // REQUIRED to find dynamic RootHide paths!
 
 // Preference variables
 static BOOL enabled = YES;
@@ -13,8 +12,8 @@ static BOOL hookScrolling = NO;
 static NSTimeInterval lastHapticTime = 0;
 
 static void loadPrefs() {
-    // Dynamically resolves the path regardless of RootHide randomizations
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:ROOT_PATH_NS(@"/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist")];
+    // Standard Rootless path. The RootHide Patcher will automatically translate this!
+    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:@"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist"];
     
     if (prefs) {
         enabled = [prefs[@"enabled"] boolValue];
@@ -28,7 +27,6 @@ static void loadPrefs() {
 static void triggerHaptic() {
     if (!enabled) return;
     
-    // 50ms time gate: prevents the Taptic Engine from rattling if two events fire simultaneously
     NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
     if (currentTime - lastHapticTime < 0.05) return; 
     lastHapticTime = currentTime;
@@ -38,8 +36,8 @@ static void triggerHaptic() {
         case 0: style = UIImpactFeedbackStyleLight; break;
         case 1: style = UIImpactFeedbackStyleMedium; break;
         case 2: style = UIImpactFeedbackStyleHeavy; break;
-        case 3: style = UIImpactFeedbackStyleSoft; break;   // Great for subtle UI shifts
-        case 4: style = UIImpactFeedbackStyleRigid; break;  // Great for mechanical keyboard feels
+        case 3: style = UIImpactFeedbackStyleSoft; break;   
+        case 4: style = UIImpactFeedbackStyleRigid; break;  
     }
     
     UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:style];
@@ -47,7 +45,6 @@ static void triggerHaptic() {
     [generator impactOccurred];
 }
 
-// 1. Keyboard Injection
 %hook UIKeyboardImpl
 - (void)insertText:(id)arg1 {
     %orig;
@@ -59,7 +56,6 @@ static void triggerHaptic() {
 }
 %end
 
-// 2. Button Injection
 %hook UIControl
 - (void)sendAction:(SEL)action to:(id)target forEvent:(UIEvent *)event {
     %orig;
@@ -67,7 +63,6 @@ static void triggerHaptic() {
 }
 %end
 
-// 3. Scrolling Injection (Fires slightly when momentum stops)
 %hook UIScrollView
 - (void)_scrollViewDidEndDecelerating {
     %orig;
@@ -75,7 +70,6 @@ static void triggerHaptic() {
 }
 %end
 
-// Initialization & Preference listener
 %ctor {
     loadPrefs();
     CFNotificationCenterAddObserver(
