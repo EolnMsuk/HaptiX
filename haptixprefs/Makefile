@@ -11,5 +11,6 @@ haptixprefs_FRAMEWORKS = UIKit
 haptixprefs_PRIVATE_FRAMEWORKS = Preferences
 haptixprefs_INSTALL_PATH = /Library/PreferenceBundles
 haptixprefs_CFLAGS = -fobjc-arc
+haptixprefs_LDFLAGS = -undefined dynamic_lookup
 
 include $(THEOS_MAKE_PATH)/bundle.mk
