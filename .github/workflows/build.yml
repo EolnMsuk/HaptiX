@@ -20,6 +20,11 @@ jobs:
         with:
           theos-sdks: 'https://github.com/theos/sdks'
 
+      - name: Fix Line Endings
+        run: |
+          brew install dos2unix
+          dos2unix control
+
       - name: Compile the Tweak
         run: make package FINALPACKAGE=1
 
