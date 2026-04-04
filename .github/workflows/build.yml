@@ -2,40 +2,29 @@ name: Build iOS Tweak
 
 on:
   push:
-    branches:
-      - main 
-  workflow_dispatch: 
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
-    runs-on: macos-latest 
-
+    runs-on: macos-latest
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 📦 Install Dependencies
-        run: |
-          brew install ldid dos2unix
+      - name: Setup Theos Environment
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-sdks: 'https://github.com/theos/sdks'
 
-      - name: 🛠️ Setup Official Theos
-        run: |
-          # Back to the standard, stable Theos build system
-          git clone --recursive https://github.com/theos/theos.git $HOME/theos
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+      - name: Compile the Tweak
+        run: make package FINALPACKAGE=1
 
-      - name: 📚 Download iOS SDKs
-        run: |
-          rm -rf $HOME/theos/sdks
-          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
-
-      - name: 🏗️ Compile Tweak
-        run: |
-          dos2unix control
-          make package FINALPACKAGE=1
-
-      - name: 📦 Upload .deb Artifact
+      - name: Upload .deb as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HaptiX-Rootless-Deb
-          path: packages/*.deb
+          path: ${{ github.workspace }}/packages/*.deb
