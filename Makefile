@@ -1,7 +1,5 @@
-THEOS_PACKAGE_SCHEME = rootless
 TARGET := iphone:clang:16.5:14.5
-ARCHS = arm64 arm64e
-INSTALL_TARGET_PROCESSES = SpringBoard
+THEOS_PACKAGE_SCHEME = rootless
 
 include $(THEOS)/makefiles/common.mk
 
@@ -14,3 +12,8 @@ HaptiX_FRAMEWORKS = UIKit AudioToolbox
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += haptixprefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
+
+# The "Magic" part that forces PreferenceLoader to see the settings menu
+internal-stage::
+	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
+	$(ECHO_NOTHING)cp haptixprefs/entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/HaptiX.plist$(ECHO_END)
