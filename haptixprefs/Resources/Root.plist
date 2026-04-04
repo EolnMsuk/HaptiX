@@ -31,7 +31,7 @@
             <key>label</key>
             <string>Haptic Engine Power</string>
             <key>footerText</key>
-            <string>Overdrive bypasses standard limits for extremely strong hardware-level vibration.</string>
+            <string>Rigid uses instant system sounds for zero latency. Overdrive bypasses standard limits for extremely strong hardware-level vibration.</string>
         </dict>
         <dict>
             <key>cell</key>
@@ -48,14 +48,12 @@
                 <integer>1</integer>
                 <integer>2</integer>
                 <integer>3</integer>
-                <integer>4</integer>
             </array>
             <key>validTitles</key>
             <array>
-                <string>Light</string>
-                <string>Med</string>
-                <string>Heavy</string>
                 <string>Soft</string>
+                <string>Med</string>
+                <string>Hard</string>
                 <string>Rigid</string>
             </array>
             <key>PostNotification</key>
@@ -81,6 +79,20 @@
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Hardware &amp; System</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookAppSwitcher</string>
+            <key>label</key>
+            <string>App Switcher &amp; Gestures</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
         <dict>
             <key>cell</key>
@@ -155,7 +167,7 @@
             <key>key</key>
             <string>hookKeyboard</string>
             <key>label</key>
-            <string>Keyboard Presses</string>
+            <string>Keyboard Presses &amp; Deletes</string>
             <key>PostNotification</key>
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
@@ -211,7 +223,7 @@
             <key>key</key>
             <string>hookScrolling</string>
             <key>label</key>
-            <string>Scroll Momentum End</string>
+            <string>Scroll Collision Edge</string>
             <key>PostNotification</key>
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
@@ -222,19 +234,32 @@
             <key>label</key>
             <string>Exceptions</string>
             <key>footerText</key>
-            <string>Enter app Bundle IDs separated by commas (e.g. com.apple.camera, com.apple.maps) to disable HaptiX in them.</string>
+            <string>Select apps where HaptiX will be automatically disabled.</string>
         </dict>
         <dict>
             <key>cell</key>
-            <string>PSEditTextCell</string>
+            <string>PSLinkListCell</string>
+            <key>detail</key>
+            <string>ATLApplicationListMultiSelectionController</string>
             <key>defaults</key>
             <string>com.eolnmsuk.haptix</string>
             <key>key</key>
             <string>blacklistedApps</string>
-            <key>placeholder</key>
-            <string>com.apple.camera</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+            <key>label</key>
+            <string>Excluded Apps</string>
+            <key>sections</key>
+            <array>
+                <dict>
+                    <key>sectionType</key>
+                    <string>Visible</string>
+                </dict>
+            </array>
+            <key>showIdentifiersAsSubtitle</key>
+            <true/>
+            <key>defaultApplicationSwitchValue</key>
+            <false/>
+            <key>useSearchBar</key>
+            <true/>
         </dict>
 
         <dict>
