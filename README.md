@@ -1,3 +1,7 @@
+# THIS IS IN BETA DO NOT INSTALL
+# THIS IS IN BETA DO NOT INSTALL
+# THIS IS IN BETA DO NOT INSTALL
+
 # HaptiX 📳
 
 **HaptiX** is an advanced, system-wide haptic customization tweak designed specifically for modern iOS 16 rootless jailbreaks (like Dopamine 2). 
