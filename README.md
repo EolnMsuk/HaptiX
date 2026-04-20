@@ -58,10 +58,8 @@ Once installed, configure HaptiX directly from the native iOS **Settings** app.
 
 *We recommend disabling Apple's native keyboard haptics (Settings \> Sounds & Haptics \> Keyboard Feedback) to let HaptiX take over entirely and prevent overlapping feedback.*
 
-## 🧑‍💻 Author
+## 🫡 Thanks
 
-Developed by **eolnmsuk**
+Author: [EolnMsuk](https://github.com/EolnMsuk)
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+Donate: [BTC](https://www.blockchain.com/explorer/addresses/btc/bc1qm06lzkdfule3f7flf4u70xvjrp5n74lzxnnfks) | [Venmo](https://venmo.com/user/eolnmsuk)
