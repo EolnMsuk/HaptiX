@@ -29,19 +29,44 @@ jobs:
           brew install dos2unix
           dos2unix control
 
-      - name: Compile the Tweak
+      - name: Build Rootless Package
         run: make package FINALPACKAGE=1
 
-      - name: Upload .deb as Artifact
+      - name: Stage Rootless .deb
+        run: |
+          mkdir -p dist
+          for f in packages/*.deb; do
+            cp "$f" "dist/$(basename "${f%.deb}")-rootless.deb"
+          done
+
+      - name: Clean Build Artifacts
+        run: make clean
+
+      - name: Build Rootful Package
+        run: make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=
+
+      - name: Stage Rootful .deb
+        run: |
+          for f in packages/*.deb; do
+            cp "$f" "dist/$(basename "${f%.deb}")-rootful.deb"
+          done
+
+      - name: Upload Rootless .deb as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HaptiX-Rootless-Deb
-          path: ${{ github.workspace }}/packages/*.deb
+          path: dist/*-rootless.deb
+
+      - name: Upload Rootful .deb as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HaptiX-Rootful-Deb
+          path: dist/*-rootful.deb
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ github.workspace }}/packages/*.deb
+          files: dist/*.deb
           generate_release_notes: false
           body: "See CHANGELOG.md for details."
