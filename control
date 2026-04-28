@@ -5,5 +5,5 @@ Version: 1.0.1
 Architecture: iphoneos-arm64
 Description: System-wide haptic feedback tweak for iOS 16 rootless jailbreaks. Configurable profiles, per-app exclusions, and SpringBoard hardware button support.
 Maintainer: EolnMsuk
-Author: EolMsuk
+Author: EolnMsuk
 Section: Tweaks
