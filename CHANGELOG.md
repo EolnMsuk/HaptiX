@@ -4,6 +4,13 @@ All notable changes to HaptiX are documented here.
 
 ## [1.0.3] — 2026-04-28
 
+### Build
+- **Three-package CI pipeline**: `build.yml` now produces three `.deb` artifacts per run — `HaptiX-{version}-rootless.deb` (iOS 15+, new AltList), `HaptiX-{version}-rootful.deb` (iOS 15+, new AltList), and `HaptiX-{version}-rootful-legacy.deb` (iOS 13–14, legacy AltList). All three are uploaded as artifacts and attached to each draft GitHub Release with a selection table.
+- **Auto-tagging and draft releases**: `build.yml` extracts the version from `control` at build time, creates a matching git tag, and opens a draft GitHub Release on every push to `main`. No manual tag push required. The draft body contains a plain-language table and decision guide for choosing the correct `.deb`.
+- **Package directory cleanup**: Added `rm -f packages/*.deb` alongside every `make clean` step. Theos's `make clean` does not remove `packages/`; without this the `cp packages/*.deb dist/…` glob accumulates `.deb` files from prior builds and fails on the second and third package.
+- **`Makefile.legacy`**: New root-level Makefile for the legacy rootful build. Sets `THEOS_PACKAGE_SCHEME =` (rootful) and exports both `THEOS_PACKAGE_SCHEME` and `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so `haptixprefs/Makefile` inherits the correct scheme and framework path through the sub-make without any in-place framework file swapping.
+- **`haptixprefs/Makefile`**: `THEOS_PACKAGE_SCHEME = rootless` changed to `?=` (conditional assignment) so the value is inherited from a parent export or command-line override instead of being hardcoded. Added `ALTLIST_FRAMEWORK_SEARCH_PATH ?= ../vendor` using the same pattern — defaults to the new AltList framework; overridden to `../vendor/legacy` when `Makefile.legacy` is the entry point.
+
 ### Fixed
 - **Reset button** (`resetSettings`): Replaced `NSFileManager removeItemAtPath:` with the CFPreferences API (`CFPreferencesCopyKeyList` → `CFPreferencesSetAppValue(key, NULL, domain)` → `CFPreferencesAppSynchronize`). The old file-deletion approach left cfprefsd's in-memory cache intact, so `reloadSpecifiers` re-displayed stale values. The new approach removes keys through the daemon, flushing both the cache and the backing plist atomically. Also inherently rootless/rootful agnostic — no `/var/jb` path detection required.
 - **Feedback Style cell**: Added missing `<key>detail</key><string>PSListItemsController</string>` to the `PSListItemsCell` specifier in `Root.plist`. Without this key the Preferences framework had no controller to push, rendering the cell as an inert grey label with no selectable options.

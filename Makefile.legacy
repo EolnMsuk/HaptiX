@@ -1,0 +1,22 @@
+TARGET := iphone:clang:16.5:13.0
+THEOS_PACKAGE_SCHEME =
+
+include $(THEOS)/makefiles/common.mk
+
+TWEAK_NAME = HaptiX
+
+HaptiX_FILES = Tweak.x
+HaptiX_CFLAGS = -fobjc-arc
+HaptiX_FRAMEWORKS = UIKit
+
+# Export both vars so haptixprefs/Makefile picks them up via ?= without a swap
+export THEOS_PACKAGE_SCHEME
+export ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy
+
+include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += haptixprefs
+include $(THEOS_MAKE_PATH)/aggregate.mk
+
+internal-stage::
+	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
+	$(ECHO_NOTHING)cp haptixprefs/entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/HaptiX.plist$(ECHO_END)

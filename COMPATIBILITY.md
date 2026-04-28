@@ -18,12 +18,15 @@ HaptiX is compiled against the iOS 16.5 SDK with a deployment floor of iOS 13.0.
 
 ### Package variants
 
-Two `.deb` packages are produced by the CI pipeline and published to each GitHub Release:
+Three `.deb` packages are produced by the CI pipeline and published to each GitHub Release:
 
-| Package suffix | `THEOS_PACKAGE_SCHEME` | Prefs path prefix | Target |
-|----------------|------------------------|-------------------|--------|
-| `-rootless.deb` | `rootless` | `/var/jb` | Dopamine 2, RootHide, palera1n (rootless) |
-| `-rootful.deb` | *(unset)* | *(none)* | Checkra1n, unc0ver, palera1n (rootful) |
+| Package suffix | `THEOS_PACKAGE_SCHEME` | AltList | Prefs path prefix | Target |
+|----------------|------------------------|---------|-------------------|--------|
+| `-rootless.deb` | `rootless` | New | `/var/jb` | Dopamine 2, RootHide, palera1n (rootless) |
+| `-rootful.deb` | *(unset)* | New | *(none)* | palera1n (rootful mode) |
+| `-rootful-legacy.deb` | *(unset)* | Legacy | *(none)* | Checkra1n, unc0ver, Electra |
+
+The rootless and rootful packages are built against `vendor/AltList.framework` (new). The legacy package is built via `Makefile.legacy`, which exports `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so the prefs subproject links against `vendor/AltList_Old.framework` (armv7 + arm64 + arm64e universal) without touching the main framework tree.
 
 The preferences controller (`HaptixPrefsRootListController.m`) resolves the correct path at runtime by checking for the existence of `/var/jb`, so no recompilation is needed when switching between environments.
 
@@ -37,8 +40,9 @@ The `control` file declares `Architecture: iphoneos-arm64`. arm64 slices run on 
 | RootHide | 15.0 – 16.x | iphoneos-arm64e (recompile required) | `-rootless.deb` | Supported |
 | palera1n (rootless mode) | 15.0 – 16.x | iphoneos-arm64 | `-rootless.deb` | Compatible |
 | palera1n (rootful mode) | 15.0 – 16.x | iphoneos-arm64 | `-rootful.deb` | Compatible |
-| Checkra1n | 13.0 – 14.8.1 | iphoneos-arm64 | `-rootful.deb` | Compatible |
-| unc0ver | 13.0 – 14.8 | iphoneos-arm64 | `-rootful.deb` | Compatible |
+| Checkra1n | 13.0 – 14.8.1 | iphoneos-arm64 | `-rootful-legacy.deb` | Compatible |
+| unc0ver | 13.0 – 14.8 | iphoneos-arm64 | `-rootful-legacy.deb` | Compatible |
+| Electra | 11.0 – 13.0 | iphoneos-arm64 | `-rootful-legacy.deb` | Untested |
 
 ### Device coverage (iphoneos-arm64 build)
 
