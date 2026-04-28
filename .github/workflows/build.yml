@@ -38,7 +38,7 @@ jobs:
       - name: Stage Rootless .deb
         run: |
           mkdir -p dist
-          cp packages/*.deb "dist/HaptiX-${{ steps.version.outputs.version }}-rootless.deb"
+          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm64.deb"
 
       - name: Clean Build Artifacts
         run: make clean && rm -f packages/*.deb
@@ -49,7 +49,7 @@ jobs:
 
       - name: Stage Rootful .deb
         run: |
-          cp packages/*.deb "dist/HaptiX-${{ steps.version.outputs.version }}-rootful.deb"
+          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm.deb"
 
       - name: Clean Build Artifacts (pre-legacy)
         run: make clean && rm -f packages/*.deb
@@ -71,7 +71,7 @@ jobs:
 
       - name: Stage Rootful Legacy .deb
         run: |
-          cp packages/*.deb "dist/HaptiX-${{ steps.version.outputs.version }}-rootful-legacy.deb"
+          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm_legacy.deb"
 
       - name: Clean Build Artifacts (post-legacy)
         run: make clean && rm -f packages/*.deb
@@ -81,19 +81,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: HaptiX-Rootless-Deb
-          path: dist/*-rootless.deb
+          path: dist/*_iphoneos-arm64.deb
 
       - name: Upload Rootful .deb as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HaptiX-Rootful-Deb
-          path: dist/*-rootful.deb
+          path: dist/*_iphoneos-arm.deb
 
       - name: Upload Rootful Legacy .deb as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HaptiX-Rootful-Legacy-Deb
-          path: dist/*-rootful-legacy.deb
+          path: dist/*_iphoneos-arm_legacy.deb
 
       # ── Draft Release ──────────────────────────────────────────────────────
       - name: Create Draft Release
@@ -109,26 +109,12 @@ jobs:
           body: |
             ## HaptiX ${{ steps.version.outputs.version }}
 
-            System-wide haptic feedback tweak for iOS 13–17. Adds configurable haptics to taps, scrolls, and SpringBoard hardware buttons — with per-app exclusions and live preference reload.
-
             ---
 
             ## Which .deb should I install?
 
             | Package | Jailbreak | iOS | Notes |
             |---|---|---|---|
-            | `HaptiX-${{ steps.version.outputs.version }}-rootless.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 | Installs to `/var/jb` · new AltList |
-            | `HaptiX-${{ steps.version.outputs.version }}-rootful.deb` | Palera1n (rootful mode) | iOS 15 – 17 | Installs to `/` · new AltList |
-            | `HaptiX-${{ steps.version.outputs.version }}-rootful-legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 | Installs to `/` · legacy AltList |
-
-            > **Not sure which to use?**
-            > - If your jailbreak places tweaks under `/var/jb/…` → **rootless**
-            > - If you're on iOS 15+ with a rootful jailbreak → **rootful**
-            > - If you're on iOS 13 or 14 → **rootful-legacy**
-
-            ---
-
-            ### Requirements
-            - MobileSubstrate (Substitute / libhooker / ElleKit)
-            - PreferenceLoader
-            - [AltList](https://github.com/opa334/AltList) (`com.opa334.altlist`) — legacy builds require an older AltList version compatible with iOS 13–14
+            | `com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm64.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 | Installs to `/var/jb` · new AltList |
+            | `com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm.deb` | Palera1n (rootful mode) | iOS 15 – 17 | Installs to `/` · new AltList |
+            | `com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm_legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 | Installs to `/` · legacy AltList |
