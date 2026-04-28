@@ -2,6 +2,18 @@
 
 All notable changes to HaptiX are documented here.
 
+## [1.0.2] — 2026-04-28
+
+### Added
+- iOS 13.0 – 17.0 support: deployment target lowered from iOS 15.0 to iOS 13.0 in both `Makefile` targets.
+- Rootful jailbreak support: preferences reset path resolved dynamically at runtime — detects `/var/jb` presence to choose between rootless and rootful path layouts, eliminating the hardcoded `/var/jb` prefix.
+- Dual-package CI pipeline: `.github/workflows/build.yml` now produces two `.deb` artifacts per run — one rootless (`THEOS_PACKAGE_SCHEME=rootless`) and one rootful (scheme unset), staged to `dist/` with `-rootless` / `-rootful` suffixes. Both are uploaded as artifacts and attached to tagged GitHub Releases.
+
+### Changed
+- `control` description updated to reflect iOS 13–17 range and dual-package availability.
+- `haptixprefs/Resources/Info.plist` `MinimumOSVersion` lowered from `15.0` to `13.0`.
+- `depiction.json` compatibility field updated to `iOS 13.0 – 17.0`; architecture field updated to `iphoneos-arm64 (Rootless + Rootful)`.
+
 ## [1.0.1] — 2026-04-28
 
 ### Fixed

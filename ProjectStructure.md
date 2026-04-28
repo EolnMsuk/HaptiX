@@ -29,8 +29,8 @@ HaptiX/
 │   ├── %group UIKitHooks            # UIKit process hooks (all injected apps)
 │   └── %group SpringBoardHooks      # SpringBoard-only hardware hooks
 │
-├── Makefile                         # Root build; TARGET=iphone:clang:16.5:15.0;
-│                                    # THEOS_PACKAGE_SCHEME=rootless;
+├── Makefile                         # Root build; TARGET=iphone:clang:16.5:13.0;
+│                                    # THEOS_PACKAGE_SCHEME=rootless (default, overridable);
 │                                    # internal-stage:: copies entry.plist
 │
 ├── HaptiX.plist                     # Substrate filter: com.apple.UIKit +
@@ -77,6 +77,6 @@ HaptiX/
 │
 └── .github/
     └── workflows/
-        └── build.yml                # GitHub Actions: Theos setup → make package
-                                     # FINALPACKAGE=1 → upload .deb artifact
+        └── build.yml                # GitHub Actions: Theos setup → rootless build
+                                     # → rootful build → upload both .deb artifacts
 ```

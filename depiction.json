@@ -8,7 +8,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**HaptiX** delivers system-wide haptic feedback on iOS 16 rootless jailbreaks (Dopamine 2). Built on `UIImpactFeedbackGenerator` for clean, hardware-accelerated feedback with zero double-fire.",
+          "markdown": "**HaptiX** delivers system-wide haptic feedback on iOS 13–17, supporting both rootless (Dopamine 2 / palera1n) and rootful jailbreaks. Built on `UIImpactFeedbackGenerator` for clean, hardware-accelerated feedback with zero double-fire.",
           "useSpacing": true
         },
         {
@@ -29,17 +29,17 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0.1"
+          "text": "1.0.2"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 15.0 – 16.x"
+          "text": "iOS 13.0 – 17.0"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Architecture",
-          "text": "iphoneos-arm64 (Rootless)"
+          "text": "iphoneos-arm64 (Rootless + Rootful)"
         },
         {
           "class": "DepictionTableTextView",
@@ -51,6 +51,18 @@
     {
       "tabname": "Changelog",
       "views": [
+        {
+          "class": "DepictionHeaderView",
+          "title": "1.0.2"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Expanded support to iOS 13.0 – 17.0\n- Added rootful jailbreak support alongside existing rootless support\n- Preferences path resolved dynamically at runtime (no recompile needed)\n- CI now produces separate rootless and rootful `.deb` packages",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionHeaderView",
           "title": "1.0.1"

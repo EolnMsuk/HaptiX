@@ -1,6 +1,6 @@
 # HaptiX
 
-**HaptiX** is a system-wide haptic feedback tweak for iOS 15–16 rootless jailbreaks (Dopamine 2). It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every UIKit app and SpringBoard, with a 50ms cooldown gate that eliminates double-fire.
+**HaptiX** is a system-wide haptic feedback tweak for iOS 13–17, supporting both rootless jailbreaks (Dopamine 2, palera1n) and rootful jailbreaks (Checkra1n, unc0ver). It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every UIKit app and SpringBoard, with a 50ms cooldown gate that eliminates double-fire.
 
 ---
 
@@ -34,10 +34,11 @@ Profiles map directly to the native `UIImpactFeedbackGenerator` styles available
 
 | Field | Value |
 |-------|-------|
-| iOS | 15.0 – 16.x |
-| Architecture | `iphoneos-arm64` (Rootless) |
-| Jailbreak | Dopamine 2 |
-| RootHide | Change `Architecture` in `control` to `iphoneos-arm64e` |
+| iOS | 13.0 – 17.0 |
+| Architecture | `iphoneos-arm64` |
+| Rootless jailbreaks | Dopamine 2, RootHide, palera1n (rootless) — use `-rootless.deb` |
+| Rootful jailbreaks | Checkra1n, unc0ver, palera1n (rootful) — use `-rootful.deb` |
+| RootHide (arm64e) | Change `Architecture` in `control` to `iphoneos-arm64e` and recompile |
 
 See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict guide.
 
@@ -46,7 +47,9 @@ See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict g
 ## 📥 Installation
 
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
-2. Download the latest `.deb` artifact from the most recent release.
+2. Download the correct `.deb` for your environment:
+   - **Rootless** jailbreak (Dopamine 2, palera1n rootless): download the `*-rootless.deb` file.
+   - **Rootful** jailbreak (Checkra1n, unc0ver, palera1n rootful): download the `*-rootful.deb` file.
 3. Install it via **Sileo** or **Zebra** by opening the `.deb` file directly, or by importing it through the package manager's local file installer.
 4. A respring will be performed automatically to activate the tweak.
 
