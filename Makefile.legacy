@@ -1,5 +1,6 @@
 TARGET := iphone:clang:16.5:13.0
 THEOS_PACKAGE_SCHEME =
+ARCHS = arm64
 
 include $(THEOS)/makefiles/common.mk
 
@@ -12,6 +13,7 @@ HaptiX_FRAMEWORKS = UIKit
 # Export both vars so haptixprefs/Makefile picks them up via ?= without a swap
 export THEOS_PACKAGE_SCHEME
 export ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy
+export ARCHS
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += haptixprefs
