@@ -1,12 +1,12 @@
 # HaptiX
 
-**HaptiX** is a system-wide haptic feedback tweak for iOS 16 rootless jailbreaks (Dopamine 2). It uses Apple's `UIImpactFeedbackGenerator` API to deliver clean, hardware-accelerated Taptic Engine feedback across UIKit apps and SpringBoard with a 50ms cooldown gate that eliminates double-fire.
+**HaptiX** is a system-wide haptic feedback tweak for iOS 15–16 rootless jailbreaks (Dopamine 2). It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every UIKit app and SpringBoard, with a 50ms cooldown gate that eliminates double-fire.
 
 ---
 
-## Features
+## ✨ Features
 
-- **System-wide injection** via `com.apple.UIKit` and `com.apple.springboard` filter — no per-app hooks required.
+- **System-wide injection** via `com.apple.UIKit` and `com.apple.springboard` — no per-app setup required.
 - **50ms cooldown gate** prevents the Taptic Engine from double-firing on rapid sequential UI events.
 - **5 configurable Taptic Engine profiles** — selectable from Settings.
 - **UIKit triggers** — Keyboard, Buttons, Switches, Table Cells, Scroll Edge.
@@ -16,7 +16,7 @@
 
 ---
 
-## Haptic Profiles
+## 🎚️ Haptic Profiles
 
 | # | Name | UIImpactFeedbackStyle |
 |---|------|-----------------------|
@@ -30,7 +30,7 @@ Profiles map directly to the native `UIImpactFeedbackGenerator` styles available
 
 ---
 
-## Compatibility
+## 📱 Compatibility
 
 | Field | Value |
 |-------|-------|
@@ -39,44 +39,20 @@ Profiles map directly to the native `UIImpactFeedbackGenerator` styles available
 | Jailbreak | Dopamine 2 |
 | RootHide | Change `Architecture` in `control` to `iphoneos-arm64e` |
 
----
-
-## Building & Installation
-
-### Prerequisites
-
-- [Theos](https://github.com/theos/theos) installed and configured for rootless compilation.
-- iOS 16.5 SDK (set via `TARGET := iphone:clang:16.5:15.0` in the root `Makefile`).
-
-### Local Compilation
-
-```bash
-git clone https://github.com/EolnMsuk/HaptiX.git
-cd HaptiX
-make package
-```
-
-Install the resulting `.deb` from the `packages/` folder via Sileo, Zebra, or Filza.
-
-For a release-signed package:
-
-```bash
-make package FINALPACKAGE=1
-```
-
-To install directly to a connected device (requires `THEOS_DEVICE_IP` to be set):
-
-```bash
-make install
-```
-
-### GitHub Actions
-
-Fork the repository and enable GitHub Actions. The workflow compiles a `.deb` artifact on every push to `main` and on pull requests. Pushing a tag matching `v*` additionally creates a GitHub Release with the `.deb` attached.
+See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict guide.
 
 ---
 
-## Configuration
+## 📥 Installation
+
+1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
+2. Download the latest `.deb` artifact from the most recent release.
+3. Install it via **Sileo** or **Zebra** by opening the `.deb` file directly, or by importing it through the package manager's local file installer.
+4. A respring will be performed automatically to activate the tweak.
+
+---
+
+## ⚙️ Configuration
 
 Open **Settings → HaptiX** to configure the tweak:
 
@@ -100,13 +76,13 @@ Open **Settings → HaptiX** to configure the tweak:
 
 ---
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 **Haptics not firing after install:** Respring or restart the affected app. The tweak is injected at process launch.
 
 **Settings changes not taking effect:** The tweak hot-reloads via Darwin notification — no respring needed. If changes still don't apply, force-quit and relaunch the app.
 
-**Build fails with "SDK not found":** Ensure the Theos SDK path includes iOS 16.5. The `theos-action` CI step handles this automatically via `theos-sdks`.
+**Double haptic pulse on interactions:** Another installed tweak or a native iOS haptic setting (System Haptics / Keyboard Feedback) is firing alongside HaptiX. See [COMPATIBILITY.md](COMPATIBILITY.md) for the full conflict guide.
 
 ---
 
