@@ -1,6 +1,7 @@
 {
   "minVersion": "0.1",
-  "headerImage": "",
+  "headerImage": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/main/icon@2x.png",
+  "packageIcon": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/main/icon@2x.png",
   "tintColor": "#FF6B35",
   "tabs": [
     {

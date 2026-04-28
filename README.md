@@ -75,11 +75,26 @@ Open **Settings → HaptiX** to configure the tweak:
 | Scroll Collision Edge | Scroll boundary feedback (off by default) |
 | Excluded Apps | Per-app exclusion list (AltList) |
 
-> **Tip:** Disable Apple's native keyboard haptics (Settings > Sounds & Haptics > Keyboard Feedback) to let HaptiX take full control and prevent overlapping feedback.
+> **Note:** With both System Haptics and Keyboard Feedback → Haptic ON, every keypress will fire the system's own haptic *and* HaptiX's haptic — producing a double-pulse. This is expected behavior; reduce its intensity by choosing the Light profile in HaptiX settings or by toggling off the Keyboard Presses hook.
+
+---
+
+## ⚠️ Required iOS Settings
+
+HaptiX uses `UIImpactFeedbackGenerator`, which is gated at the OS level by Apple. **The tweak will produce zero haptic feedback if either of these settings is off — this cannot be overridden in software.**
+
+| Setting | Path | Required state |
+|---------|------|---------------|
+| System Haptics | Settings → Sounds & Haptics → System Haptics | **ON** |
+| Keyboard Feedback → Haptic | Settings → Sounds & Haptics → Keyboard Feedback → Haptic | **ON** *(only needed if the Keyboard hook is enabled)* |
 
 ---
 
 ## 🔧 Troubleshooting
+
+**No haptics at all after install:** Verify System Haptics is **ON** (Settings → Sounds & Haptics → System Haptics). `UIImpactFeedbackGenerator` is completely disabled at the OS layer when this is off — HaptiX cannot fire regardless of its own settings.
+
+**Keyboard hook produces no feedback:** Verify Keyboard Feedback → Haptic is **ON** (Settings → Sounds & Haptics → Keyboard Feedback → Haptic).
 
 **Haptics not firing after install:** Respring or restart the affected app. The tweak is injected at process launch.
 

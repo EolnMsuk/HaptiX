@@ -2,6 +2,22 @@
 
 All notable changes to HaptiX are documented here.
 
+## [1.0.3] — 2026-04-28
+
+### Fixed
+- **Reset button** (`resetSettings`): Replaced `NSFileManager removeItemAtPath:` with the CFPreferences API (`CFPreferencesCopyKeyList` → `CFPreferencesSetAppValue(key, NULL, domain)` → `CFPreferencesAppSynchronize`). The old file-deletion approach left cfprefsd's in-memory cache intact, so `reloadSpecifiers` re-displayed stale values. The new approach removes keys through the daemon, flushing both the cache and the backing plist atomically. Also inherently rootless/rootful agnostic — no `/var/jb` path detection required.
+- **Feedback Style cell**: Added missing `<key>detail</key><string>PSListItemsController</string>` to the `PSListItemsCell` specifier in `Root.plist`. Without this key the Preferences framework had no controller to push, rendering the cell as an inert grey label with no selectable options.
+
+### Added
+- **Adaptive settings banner**: `viewDidLoad` in `HaptixPrefsRootListController.m` now installs a `UIImageView` as `tableHeaderView` above all specifiers. Loads `banner.png` (Dark Mode) or `banner2.png` (Light Mode) from the bundle using `pathForResource:ofType:` (explicit file path, not asset catalog). Height is computed from the image's natural aspect ratio relative to the screen width so it scales correctly on all device sizes. `traitCollectionDidChange:` swaps the image live whenever the user switches appearance — no relaunch required. Place `banner.png` and `banner2.png` in `haptixprefs/Resources/`.
+- **Settings app icon**: Added `<key>icon</key><string>icon.png</string>` to `haptixprefs/entry.plist`. PreferenceLoader resolves this relative to the bundle resources directory and scales for `@2x`/`@3x` variants automatically. Place `icon.png` (29×29), `icon@2x.png` (58×58), and `icon@3x.png` (87×87) in `haptixprefs/Resources/`.
+- **Sileo/Zebra package icon**: Added `Icon:` field to `control` pointing to `icon@2x.png` on GitHub. Package managers derive this from the repository's `Packages` index.
+- **Sileo depiction icon**: Populated `headerImage` and added `packageIcon` in `depiction.json`, both referencing `icon@2x.png` on GitHub. Place a 512×512 `icon@2x.png` in the repository root and push to the `main` branch.
+
+### Documentation
+- `README.md`: Added **⚠️ Required iOS Settings** section clarifying that System Haptics must be **ON** and Keyboard Feedback → Haptic must be **ON** (when the keyboard hook is enabled). Added targeted troubleshooting bullets for both scenarios. Corrected a misleading tip that instructed users to disable Apple's native keyboard haptics (the opposite of what is required).
+- `COMPATIBILITY.md`: Added **Required iOS Settings** table under System Conflicts marking System Haptics as **REQUIRED — ON** and Keyboard Feedback → Haptic as **REQUIRED — ON** (for the keyboard hook). Corrected the prior table row that labelled System Haptics as optional.
+
 ## [1.0.2] — 2026-04-28
 
 ### Added

@@ -51,16 +51,25 @@ The `control` file declares `Architecture: iphoneos-arm64`. arm64 slices run on 
 
 ---
 
+## Required iOS Settings
+
+> **HaptiX will not produce any haptic feedback if these settings are disabled.** This is an intentional OS-level gate enforced by Apple: `UIImpactFeedbackGenerator` silently becomes a no-op when System Haptics is off, with no way to bypass it through the same API.
+
+| Setting | Location | Status | Effect if disabled |
+|---------|----------|--------|--------------------|
+| **System Haptics** | Settings → Sounds & Haptics → System Haptics | **REQUIRED — ON** | All HaptiX haptics stop completely. Every hook calls `UIImpactFeedbackGenerator`, which is fully blocked at the OS layer when this is off. |
+| **Keyboard Feedback → Haptic** | Settings → Sounds & Haptics → Keyboard Feedback → Haptic | **REQUIRED — ON** (if `hookKeyboard` is enabled) | Keyboard hook fires but produces no haptic output. Turn this on to get haptic feedback on keypresses. |
+
 ## System Conflicts
 
 These are native iOS settings that, when enabled alongside HaptiX, cause the Taptic Engine to fire twice per interaction.
 
 | Native Setting | Location | Conflicting Hook | Recommendation |
 |---------------|----------|-----------------|----------------|
-| Keyboard Feedback — Haptic | Settings > Sounds & Haptics > Keyboard Feedback | `UIKeyboardImpl -playKeyClickSound` | Disable to prevent double-tap feedback on every keystroke |
-| System Haptics | Settings > Sounds & Haptics > System Haptics | `UIControl -sendAction:to:forEvent:`, `UISwitch -setOn:animated:` | Disabling removes iOS baseline haptics system-wide; optional but eliminates all overlap |
+| Keyboard Feedback — Haptic | Settings > Sounds & Haptics > Keyboard Feedback | `UIKeyboardImpl -playKeyClickSound` | HaptiX fires its own haptic on the same event — you will get double feedback. Leave it ON (required for HaptiX keyboard haptics), but be aware the system also fires its own haptic for key taps. |
+| System Haptics | Settings > Sounds & Haptics > System Haptics | All hooks | Must remain ON. Disabling it silences HaptiX entirely. |
 
-> If you leave System Haptics enabled, UIKit interactions (button taps, switch toggles) will produce one system haptic followed immediately by HaptiX's injection, which is audible on heavy Taptic Engine modes. Keyboard Feedback is the most noticeable conflict and should always be disabled when `hookKeyboard` is on.
+> UIKit interactions (button taps, switch toggles) already carry a native system haptic when System Haptics is on. HaptiX adds a second one from its hooks. On Heavy/Rigid profiles this double-pulse is noticeable. You can reduce overlap by using the Light profile or by disabling specific hooks (e.g. `hookButtons`, `hookSwitches`) in HaptiX settings.
 
 ---
 
