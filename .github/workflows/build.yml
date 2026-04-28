@@ -59,6 +59,12 @@ jobs:
         run: |
           mkdir -p vendor/legacy
           cp -r vendor/AltList_Old.framework vendor/legacy/AltList.framework
+          # Strip the arm64e slice — its fat-header entry says arm64e but the
+          # slice itself uses the old ABI (arm64e.old), which Xcode 15+ linkers
+          # reject even when linking arm64. Legacy targets only need arm64.
+          lipo vendor/legacy/AltList.framework/AltList \
+            -remove arm64e \
+            -output vendor/legacy/AltList.framework/AltList
 
       - name: Build Rootful Legacy Package
         run: make -f Makefile.legacy package FINALPACKAGE=1
