@@ -3,8 +3,6 @@ name: Build iOS Tweak
 on:
   push:
     branches: [ main ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -29,15 +27,17 @@ jobs:
           brew install dos2unix
           dos2unix control
 
+      - name: Extract Version
+        id: version
+        run: echo "version=$(grep '^Version:' control | awk '{print $2}')" >> $GITHUB_OUTPUT
+
       - name: Build Rootless Package
         run: make package FINALPACKAGE=1
 
       - name: Stage Rootless .deb
         run: |
           mkdir -p dist
-          for f in packages/*.deb; do
-            cp "$f" "dist/$(basename "${f%.deb}")-rootless.deb"
-          done
+          cp packages/*.deb "dist/HaptiX-${{ steps.version.outputs.version }}-rootless.deb"
 
       - name: Clean Build Artifacts
         run: make clean
@@ -47,9 +47,7 @@ jobs:
 
       - name: Stage Rootful .deb
         run: |
-          for f in packages/*.deb; do
-            cp "$f" "dist/$(basename "${f%.deb}")-rootful.deb"
-          done
+          cp packages/*.deb "dist/HaptiX-${{ steps.version.outputs.version }}-rootful.deb"
 
       - name: Upload Rootless .deb as Artifact
         uses: actions/upload-artifact@v4
@@ -63,10 +61,35 @@ jobs:
           name: HaptiX-Rootful-Deb
           path: dist/*-rootful.deb
 
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Create Draft Release
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: HaptiX ${{ steps.version.outputs.version }}
+          draft: true
+          make_latest: false
           files: dist/*.deb
           generate_release_notes: false
-          body: "See CHANGELOG.md for details."
+          body: |
+            ## HaptiX ${{ steps.version.outputs.version }}
+
+            System-wide haptic feedback tweak for iOS 13–17. Adds configurable haptics to taps, scrolls, and SpringBoard hardware buttons — with per-app exclusions and live preference reload.
+
+            ---
+
+            ## Which .deb should I install?
+
+            | Package | Jailbreak | iOS | Layout |
+            |---|---|---|---|
+            | `HaptiX-${{ steps.version.outputs.version }}-rootless.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 | Installs to `/var/jb` |
+            | `HaptiX-${{ steps.version.outputs.version }}-rootful.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 | Installs to `/` |
+
+            > **Not sure which to use?** If your jailbreak places tweaks under `/var/jb/…`, choose **rootless**. Otherwise choose **rootful**.
+
+            ---
+
+            ### Requirements
+            - MobileSubstrate (Substitute / libhooker / ElleKit)
+            - PreferenceLoader
+            - [AltList](https://github.com/opa334/AltList) (`com.opa334.altlist`)
