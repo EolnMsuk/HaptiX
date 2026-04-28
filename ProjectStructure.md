@@ -21,15 +21,19 @@ The preferences bundle (`haptixprefs`) is a separate compiled target installed t
 
 Three `.deb` packages are produced per CI run by `.github/workflows/build.yml`:
 
-| Package | Makefile | `THEOS_PACKAGE_SCHEME` | AltList | Target |
-|---------|----------|------------------------|---------|--------|
-| `-rootless.deb` | `Makefile` | `rootless` | New (`vendor/AltList.framework`) | Dopamine 2, RootHide, palera1n (rootless) |
-| `-rootful.deb` | `Makefile` | *(unset)* | New (`vendor/AltList.framework`) | palera1n (rootful) |
-| `-rootful-legacy.deb` | `Makefile.legacy` | *(unset, exported)* | Legacy (`vendor/AltList_Old.framework`) | Checkra1n, unc0ver, Electra |
+| Package | Makefile | `THEOS_PACKAGE_SCHEME` | `ARCHS` | AltList | Target |
+|---------|----------|------------------------|---------|---------|--------|
+| `-rootless.deb` | `Makefile` | `rootless` | arm64 + arm64e | New (`vendor/AltList.framework`) | Dopamine 2, RootHide, palera1n (rootless) |
+| `-rootful.deb` | `Makefile` | *(unset)* | arm64 + arm64e | New (`vendor/AltList.framework`) | palera1n (rootful) |
+| `-rootful-legacy.deb` | `Makefile.legacy` | *(unset, exported)* | arm64 only | Legacy (`vendor/AltList_Old.framework`) | Checkra1n, unc0ver, Electra |
 
-`Makefile.legacy` exports `THEOS_PACKAGE_SCHEME =` (empty = rootful) and `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` into the environment before building. Theos's `aggregate.mk` propagates the root `-f Makefile.legacy` flag to every subproject sub-make (via `$(firstword $(MAKEFILE_LIST))`), so `haptixprefs/Makefile.legacy` must also exist. Both prefs Makefiles use `?=` for these variables so they inherit the exported values without requiring command-line overrides.
+`Makefile.legacy` sets `ARCHS = arm64` (before `common.mk`) and exports `THEOS_PACKAGE_SCHEME =` (empty = rootful), `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy`, and `ARCHS` into the sub-make environment. Restricting to arm64 is correct — iOS 13–14 legacy jailbreaks target A8–A11 (arm64) devices, and the Theos toolchain cannot produce valid arm64e binaries for iOS < 14.0.
 
-The CI prepares `vendor/legacy/AltList.framework` from `vendor/AltList_Old.framework` once before the legacy build — the main `vendor/AltList.framework` is never modified. After each build, `rm -f packages/*.deb` runs alongside `make clean` because Theos does not remove `packages/` on clean, and accumulated `.deb` files from prior builds would cause the glob staging step to fail.
+Theos's `aggregate.mk` propagates the root `-f Makefile.legacy` flag to every subproject sub-make (via `$(firstword $(MAKEFILE_LIST))`), so `haptixprefs/Makefile.legacy` must also exist. Both prefs Makefiles use `?=` for `THEOS_PACKAGE_SCHEME` and `ALTLIST_FRAMEWORK_SEARCH_PATH` so they inherit the exported values.
+
+The CI "Prepare Legacy AltList Framework" step copies `vendor/AltList_Old.framework` to `vendor/legacy/AltList.framework` and then runs `lipo -remove arm64e` on the binary. `AltList_Old.framework/AltList` contains an arm64e slice whose slice data uses the old ABI (`arm64e.old`) but whose fat-header entry is labeled `arm64e`. Xcode 15/16 linkers validate all fat-header entries before extracting any slice, so even an arm64-only link step hard-errors on the mismatch; stripping the slice before building avoids this. The main `vendor/AltList.framework` is never modified.
+
+After each build, `rm -f packages/*.deb` runs alongside `make clean` because Theos does not remove `packages/` on clean, and accumulated `.deb` files from prior builds would cause the glob staging step to fail.
 
 The workflow also extracts the version from `control`, creates a matching git tag, and opens a draft GitHub Release on every push to `main`.
 
@@ -52,15 +56,20 @@ HaptiX/
 │                                    # internal-stage:: copies entry.plist
 │
 ├── Makefile.legacy                  # Root build for rootful-legacy package;
-│                                    # exports THEOS_PACKAGE_SCHEME= (rootful) and
-│                                    # ALTLIST_FRAMEWORK_SEARCH_PATH=../vendor/legacy
-│                                    # so haptixprefs picks up the old AltList
+│                                    # ARCHS=arm64; exports THEOS_PACKAGE_SCHEME=
+│                                    # (rootful), ALTLIST_FRAMEWORK_SEARCH_PATH=
+│                                    # ../vendor/legacy, and ARCHS so haptixprefs
+│                                    # sub-make inherits all three
 │
 ├── HaptiX.plist                     # Substrate filter: com.apple.UIKit +
 │                                    # com.apple.springboard
 │
 ├── control                          # Debian package metadata (version, deps, arch)
 ├── depiction.json                   # Sileo/Zebra native depiction page
+├── icon@2x.png                      # 512×512 repo-root icon for Sileo depiction
+│                                    # and package manager listing (referenced in
+│                                    # control Icon: field and depiction.json)
+├── LICENSE                          # Project license
 ├── CHANGELOG.md                     # Version history
 ├── COMPATIBILITY.md                 # Device/jailbreak matrix, conflict guide
 ├── ProjectStructure.md              # This file
@@ -80,12 +89,22 @@ HaptiX/
 │   │                                # /Library/PreferenceLoader/Preferences/ at build)
 │   ├── HaptixPrefsRootListController.h
 │   ├── HaptixPrefsRootListController.m  # resetSettings() — clears prefs via
-│   │                                    # CFPreferences API; posts ReloadPrefs notify
+│   │                                    # CFPreferences API; posts ReloadPrefs notify;
+│   │                                    # viewDidLoad installs adaptive banner header;
+│   │                                    # traitCollectionDidChange: swaps banner live
 │   └── Resources/
 │       ├── Info.plist               # Bundle metadata for the PreferenceBundle
-│       └── Root.plist               # Declarative Settings UI (PSSpecifiers):
-│                                    # enabled, hapticStyle (5 profiles), 10 hook
-│                                    # toggles, AltList exclusion list, Reset button
+│       ├── Root.plist               # Declarative Settings UI (PSSpecifiers):
+│       │                            # enabled, hapticStyle (5 profiles), 10 hook
+│       │                            # toggles, AltList exclusion list, Reset button
+│       ├── icon.png                 # Settings app icon — 29×29 (@1x)
+│       ├── icon@2x.png              # Settings app icon — 58×58 (@2x)
+│       ├── icon@3x.png              # Settings app icon — 87×87 (@3x)
+│       ├── iconRaw.png              # Uncompressed source for icon variants
+│       ├── banner.png               # Settings pane header — Dark Mode
+│       ├── banner2.png              # Settings pane header — Light Mode
+│       ├── bannerRaw.png            # Uncompressed source for banner.png
+│       └── banner2Raw.png           # Uncompressed source for banner2.png
 │
 ├── vendor/
 │   ├── AltList.framework/           # New AltList — arm64 + arm64e universal;
@@ -110,14 +129,18 @@ HaptiX/
 │   │                                # reference — same architecture set as above
 │   │
 │   └── AltList_Old.framework/       # Legacy AltList — armv7 + arm64 + arm64e
-│                                    # universal; required for iOS 13–14 rootful
-│                                    # builds. CI copies this to vendor/legacy/
-│                                    # AltList.framework before invoking Makefile.legacy
+│                                    # universal (arm64e slice uses old ABI /
+│                                    # arm64e.old, which causes fat-header mismatch
+│                                    # errors on Xcode 15/16 linkers). CI strips the
+│                                    # arm64e slice via lipo before linking.
+│                                    # Required for iOS 13–14 rootful legacy builds.
 │
 └── .github/
     └── workflows/
         └── build.yml                # GitHub Actions: Theos setup → rootless build
-                                     # → rootful build → legacy rootful build →
-                                     # upload 3 .deb artifacts → create draft release
-                                     # with auto-tag from control version
+                                     # → rootful build → legacy rootful build
+                                     # (lipo strips arm64e from AltList_Old before
+                                     # linking) → upload 3 .deb artifacts →
+                                     # create draft release with auto-tag from
+                                     # control version
 ```

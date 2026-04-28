@@ -2,6 +2,17 @@
 
 All notable changes to HaptiX are documented here.
 
+## [1.0.4] — 2026-04-28
+
+### Build
+- **Debian-convention package naming**: `.deb` artifacts renamed from `HaptiX-{version}-{rootless,rootful,rootful-legacy}.deb` to `com.eolnmsuk.haptix_{version}_{iphoneos-arm64,iphoneos-arm,iphoneos-arm_legacy}.deb`. Updated `build.yml` stage `cp` commands, `upload-artifact` path globs, and the draft release "Which .deb should I install?" table to match.
+
+### Documentation
+- `COMPATIBILITY.md`: Package variants table updated to the new full Debian filenames; added `ARCHS` column; prose expanded to document the `ARCHS = arm64` export in `Makefile.legacy` and the `lipo -remove arm64e` CI step with root-cause explanation. Jailbreak support table updated from old suffix notation to `…_iphoneos-arm64/arm/arm_legacy.deb` shorthand.
+- `CLAUDE.md`: Updated `Makefile.legacy` key-file entry to list all three exports (`THEOS_PACKAGE_SCHEME`, `ALTLIST_FRAMEWORK_SEARCH_PATH`, `ARCHS`); updated `vendor/AltList_Old.framework` entry to document the arm64e.old ABI mismatch and lipo strip; updated local legacy-prep instructions to include the `lipo -remove arm64e` step; added CI output table showing the three produced artifact filenames.
+
+---
+
 ## [1.0.3] — 2026-04-28
 
 ### Build
@@ -10,6 +21,8 @@ All notable changes to HaptiX are documented here.
 - **Package directory cleanup**: Added `rm -f packages/*.deb` alongside every `make clean` step. Theos's `make clean` does not remove `packages/`; without this the `cp packages/*.deb dist/…` glob accumulates `.deb` files from prior builds and fails on the second and third package.
 - **`Makefile.legacy`**: New root-level Makefile for the legacy rootful build. Sets `THEOS_PACKAGE_SCHEME =` (rootful) and exports both `THEOS_PACKAGE_SCHEME` and `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so `haptixprefs/Makefile` inherits the correct scheme and framework path through the sub-make without any in-place framework file swapping.
 - **`haptixprefs/Makefile`**: `THEOS_PACKAGE_SCHEME = rootless` changed to `?=` (conditional assignment) so the value is inherited from a parent export or command-line override instead of being hardcoded. Added `ALTLIST_FRAMEWORK_SEARCH_PATH ?= ../vendor` using the same pattern — defaults to the new AltList framework; overridden to `../vendor/legacy` when `Makefile.legacy` is the entry point.
+- **Legacy build: arm64-only restriction**: `Makefile.legacy` now sets `ARCHS = arm64` (before `common.mk`) and `export ARCHS`. The legacy build targets iOS 13–14 on unc0ver/checkra1n which are A8–A11 (arm64) devices; arm64e is neither needed nor producible for iOS < 14.0 with the current Theos toolchain.
+- **Legacy CI: strip malformed arm64e slice**: `AltList_Old.framework/AltList` is a fat binary whose fat header labels the third slice as `arm64e` but whose slice data uses the old ABI (`arm64e.old`). Xcode 15/16 linkers on `macos-latest` validate all fat-header entries before extracting any slice, so even the arm64 link step hard-errors on the mismatch. The "Prepare Legacy AltList Framework" CI step now runs `lipo -remove arm64e` on the copied framework before the build starts, leaving only the valid armv7 and arm64 slices.
 
 ### Fixed
 - **Reset button** (`resetSettings`): Replaced `NSFileManager removeItemAtPath:` with the CFPreferences API (`CFPreferencesCopyKeyList` → `CFPreferencesSetAppValue(key, NULL, domain)` → `CFPreferencesAppSynchronize`). The old file-deletion approach left cfprefsd's in-memory cache intact, so `reloadSpecifiers` re-displayed stale values. The new approach removes keys through the daemon, flushing both the cache and the backing plist atomically. Also inherently rootless/rootful agnostic — no `/var/jb` path detection required.

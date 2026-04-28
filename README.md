@@ -32,14 +32,11 @@ Profiles map directly to the native `UIImpactFeedbackGenerator` styles available
 
 ## 📱 Compatibility
 
-| Field | Value |
-|-------|-------|
-| iOS | 13.0 – 17.0 |
-| Architecture | `iphoneos-arm64` |
-| Rootless (iOS 15+) | Dopamine 2, RootHide, palera1n (rootless) — use `-rootless.deb` |
-| Rootful (iOS 15+) | palera1n (rootful mode) — use `-rootful.deb` |
-| Rootful legacy (iOS 13–14) | Checkra1n, unc0ver, Electra — use `-rootful-legacy.deb` |
-| RootHide (arm64e) | Change `Architecture` in `control` to `iphoneos-arm64e` and recompile |
+| File | Jailbreak | iOS | Chip |
+| :--- | :--- | :--- | :--- |
+| `*_iphoneos-arm64.deb` | Dopamine, meowbrek2, palera1n **rootless** | 15.0 – 17.0 | A12+ · A9–A11 |
+| `*_iphoneos-arm.deb` | unc0ver, Taurine, checkra1n, palera1n **rootful** | 15.0 – 17.0 | A9+ |
+| `*_iphoneos-arm_legacy.deb` | unc0ver, checkra1n, Taurine **rootful** | 13.0 – 14.8 | A9–A11 (arm64) |
 
 See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict guide.
 

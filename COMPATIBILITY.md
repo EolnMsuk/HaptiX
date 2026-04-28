@@ -20,13 +20,13 @@ HaptiX is compiled against the iOS 16.5 SDK with a deployment floor of iOS 13.0.
 
 Three `.deb` packages are produced by the CI pipeline and published to each GitHub Release:
 
-| Package suffix | `THEOS_PACKAGE_SCHEME` | AltList | Prefs path prefix | Target |
-|----------------|------------------------|---------|-------------------|--------|
-| `-rootless.deb` | `rootless` | New | `/var/jb` | Dopamine 2, RootHide, palera1n (rootless) |
-| `-rootful.deb` | *(unset)* | New | *(none)* | palera1n (rootful mode) |
-| `-rootful-legacy.deb` | *(unset)* | Legacy | *(none)* | Checkra1n, unc0ver, Electra |
+| Package (`VERSION` = value from `control`) | `THEOS_PACKAGE_SCHEME` | `ARCHS` | AltList | Prefs path prefix | Target |
+|--------------------------------------------|------------------------|---------|---------|-------------------|--------|
+| `com.eolnmsuk.haptix_VERSION_iphoneos-arm64.deb` | `rootless` | arm64 + arm64e | New | `/var/jb` | Dopamine 2, RootHide, palera1n (rootless) |
+| `com.eolnmsuk.haptix_VERSION_iphoneos-arm.deb` | *(unset)* | arm64 + arm64e | New | *(none)* | palera1n (rootful mode) |
+| `com.eolnmsuk.haptix_VERSION_iphoneos-arm_legacy.deb` | *(unset)* | arm64 only | Legacy | *(none)* | Checkra1n, unc0ver, Electra |
 
-The rootless and rootful packages are built against `vendor/AltList.framework` (new). The legacy package is built via `Makefile.legacy`, which exports `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so the prefs subproject links against `vendor/AltList_Old.framework` (armv7 + arm64 + arm64e universal) without touching the main framework tree.
+The rootless and rootful packages are built against `vendor/AltList.framework` (new, arm64 + arm64e). The legacy package is built via `Makefile.legacy`, which sets `ARCHS = arm64` (iOS 13–14 targets — A8–A11 — do not require arm64e) and exports `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so the prefs subproject links against a prepared copy of `vendor/AltList_Old.framework`. Before the legacy build runs, CI strips the arm64e slice from that copy via `lipo -remove arm64e`: the original `AltList_Old.framework` binary labels its third slice as `arm64e` in the fat header but the slice data uses the old ABI (`arm64e.old`), which Xcode 15/16 linkers reject even during an arm64-only link. Stripping the slice leaves only the valid armv7 and arm64 slices and resolves the error without modifying the source framework.
 
 The preferences controller (`HaptixPrefsRootListController.m`) resolves the correct path at runtime by checking for the existence of `/var/jb`, so no recompilation is needed when switching between environments.
 
@@ -36,13 +36,13 @@ The `control` file declares `Architecture: iphoneos-arm64`. arm64 slices run on 
 
 | Jailbreak | iOS Range | Architecture | Package | Status |
 |-----------|-----------|--------------|---------|--------|
-| Dopamine 2 | 15.0 – 16.6.1 | iphoneos-arm64 | `-rootless.deb` | Supported |
-| RootHide | 15.0 – 16.x | iphoneos-arm64e (recompile required) | `-rootless.deb` | Supported |
-| palera1n (rootless mode) | 15.0 – 16.x | iphoneos-arm64 | `-rootless.deb` | Compatible |
-| palera1n (rootful mode) | 15.0 – 16.x | iphoneos-arm64 | `-rootful.deb` | Compatible |
-| Checkra1n | 13.0 – 14.8.1 | iphoneos-arm64 | `-rootful-legacy.deb` | Compatible |
-| unc0ver | 13.0 – 14.8 | iphoneos-arm64 | `-rootful-legacy.deb` | Compatible |
-| Electra | 11.0 – 13.0 | iphoneos-arm64 | `-rootful-legacy.deb` | Untested |
+| Dopamine 2 | 15.0 – 16.6.1 | iphoneos-arm64 | `…_iphoneos-arm64.deb` | Supported |
+| RootHide | 15.0 – 16.x | iphoneos-arm64e (recompile required) | `…_iphoneos-arm64.deb` | Supported |
+| palera1n (rootless mode) | 15.0 – 16.x | iphoneos-arm64 | `…_iphoneos-arm64.deb` | Compatible |
+| palera1n (rootful mode) | 15.0 – 16.x | iphoneos-arm64 | `…_iphoneos-arm.deb` | Compatible |
+| Checkra1n | 13.0 – 14.8.1 | iphoneos-arm64 | `…_iphoneos-arm_legacy.deb` | Compatible |
+| unc0ver | 13.0 – 14.8 | iphoneos-arm64 | `…_iphoneos-arm_legacy.deb` | Compatible |
+| Electra | 11.0 – 13.0 | iphoneos-arm64 | `…_iphoneos-arm_legacy.deb` | Untested |
 
 ### Device coverage (iphoneos-arm64 build)
 
