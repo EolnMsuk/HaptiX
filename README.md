@@ -36,6 +36,17 @@ See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict g
 
 ---
 
+## ⚠️ Required iOS Settings
+
+HaptiX uses `UIImpactFeedbackGenerator`, which is gated at the OS level by Apple. **The tweak will produce zero haptic feedback if either of these settings is off — this cannot be overridden in software.**
+
+| Setting | Path | Required state |
+|---------|------|---------------|
+| System Haptics | Settings → Sounds & Haptics → System Haptics | **ON** |
+| Keyboard Feedback → Haptic | Settings → Sounds & Haptics → Keyboard Feedback → Haptic | **ON** *(only needed if the Keyboard hook is enabled)* |
+
+---
+
 ## ⚙️ Configuration
 
 Open **Settings → HaptiX** to configure the tweak:
@@ -55,19 +66,6 @@ Open **Settings → HaptiX** to configure the tweak:
 | Table/List Cells | `UITableViewCell` selection feedback |
 | Scroll Collision Edge | Scroll boundary feedback (off by default) |
 | Excluded Apps | Per-app exclusion list (AltList) |
-
-> **Note:** With both System Haptics and Keyboard Feedback → Haptic ON, every keypress will fire the system's own haptic *and* HaptiX's haptic — producing a double-pulse. This is expected behavior; reduce its intensity by choosing the Light profile in HaptiX settings or by toggling off the Keyboard Presses hook.
-
----
-
-## ⚠️ Required iOS Settings
-
-HaptiX uses `UIImpactFeedbackGenerator`, which is gated at the OS level by Apple. **The tweak will produce zero haptic feedback if either of these settings is off — this cannot be overridden in software.**
-
-| Setting | Path | Required state |
-|---------|------|---------------|
-| System Haptics | Settings → Sounds & Haptics → System Haptics | **ON** |
-| Keyboard Feedback → Haptic | Settings → Sounds & Haptics → Keyboard Feedback → Haptic | **ON** *(only needed if the Keyboard hook is enabled)* |
 
 ---
 
