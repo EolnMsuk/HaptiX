@@ -1,9 +1,9 @@
 Package: com.eolnmsuk.haptix
 Name: HaptiX
 Depends: mobilesubstrate, preferenceloader, com.opa334.altlist
-Version: 3.0.0
+Version: 1.0.1
 Architecture: iphoneos-arm64
-Description: Advanced system-wide haptic customization for iOS 16. Includes Overdrive mode, Hardware hooks, and AltList support.
+Description: System-wide haptic feedback tweak for iOS 16 rootless jailbreaks. Configurable profiles, per-app exclusions, and SpringBoard hardware button support.
 Maintainer: eolnmsuk
 Author: eolnmsuk
 Section: Tweaks
