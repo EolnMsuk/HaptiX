@@ -16,8 +16,11 @@
                                                             preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
-        // Delete preference file
-        [[NSFileManager defaultManager] removeItemAtPath:@"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist" error:nil];
+        // Delete preference file — resolve path at runtime to support both rootless (/var/jb prefix) and rootful layouts
+        NSString *prefsBase = [[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]
+            ? @"/var/jb/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist"
+            : @"/var/mobile/Library/Preferences/com.eolnmsuk.haptix.plist";
+        [[NSFileManager defaultManager] removeItemAtPath:prefsBase error:nil];
         
         // Notify tweak to reload defaults
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.eolnmsuk.haptix/ReloadPrefs"), NULL, NULL, YES);
