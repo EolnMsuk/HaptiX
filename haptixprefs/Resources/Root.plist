@@ -36,6 +36,8 @@
         <dict>
             <key>cell</key>
             <string>PSListItemsCell</string>
+            <key>detail</key>
+            <string>PSListItemsController</string>
             <key>defaults</key>
             <string>com.eolnmsuk.haptix</string>
             <key>key</key>
