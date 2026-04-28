@@ -1,6 +1,6 @@
 # HaptiX
 
-**HaptiX** is a system-wide haptic feedback tweak for iOS 13–17, supporting both rootless jailbreaks (Dopamine 2, palera1n) and rootful jailbreaks (Checkra1n, unc0ver). It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every UIKit app and SpringBoard, with a 50ms cooldown gate that eliminates double-fire.
+**HaptiX** is a system-wide haptic feedback tweak for iOS 13–17, supporting both rootless jailbreaks and rootful jailbreaks. It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every app.
 
 ---
 
@@ -11,35 +11,17 @@
 - **5 configurable Taptic Engine profiles** — selectable from Settings.
 - **UIKit triggers** — Keyboard, Buttons, Switches, Table Cells, Scroll Edge.
 - **SpringBoard triggers** — Volume, Power, Lock/Unlock, Homescreen Icons, App Switcher/Gestures.
-- **Per-app exclusion list** via AltList — disable HaptiX for any app without a respring.
-- **Hot-reload** — settings changes apply instantly via Darwin notification; no respring needed.
-
----
-
-## 🎚️ Haptic Profiles
-
-| # | Name | UIImpactFeedbackStyle |
-|---|------|-----------------------|
-| 0 | Light | `UIImpactFeedbackStyleLight` (default) |
-| 1 | Medium | `UIImpactFeedbackStyleMedium` |
-| 2 | Heavy | `UIImpactFeedbackStyleHeavy` |
-| 3 | Soft | `UIImpactFeedbackStyleSoft` |
-| 4 | Rigid | `UIImpactFeedbackStyleRigid` |
-
-Profiles map directly to the native `UIImpactFeedbackGenerator` styles available on iOS 13+.
+- **Per-app exclusion list** via AltList — disable HaptiX for any app.
 
 ---
 
 ## 📱 Compatibility
 
-| Field | Value |
-|-------|-------|
-| iOS | 13.0 – 17.0 |
-| Architecture | `iphoneos-arm64` |
-| Rootless (iOS 15+) | Dopamine 2, RootHide, palera1n (rootless) — use `-rootless.deb` |
-| Rootful (iOS 15+) | palera1n (rootful mode) — use `-rootful.deb` |
-| Rootful legacy (iOS 13–14) | Checkra1n, unc0ver, Electra — use `-rootful-legacy.deb` |
-| RootHide (arm64e) | Change `Architecture` in `control` to `iphoneos-arm64e` and recompile |
+| Package | Jailbreak | iOS |
+|---|---|---|
+| `iphoneos-arm64.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 |
+| `iphoneos-arm.deb` | Palera1n (rootful mode) | iOS 15 – 17 |
+| `iphoneos-arm_legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 |
 
 See [COMPATIBILITY.md](COMPATIBILITY.md) for a full device matrix and conflict guide.
 
