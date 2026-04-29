@@ -39,8 +39,7 @@ See [COMPATIBILITY.md](COMPATIBILITY.md) for more detail.
 
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
 2. Download the correct `.deb` for your environment (see table).
-3. Install it via **Sileo** or **Zebra** by opening the `.deb` file directly, or by importing it through the package manager's local file installer.
-4. A respring will be performed automatically to activate the tweak.
+3. Install (patch first if roothide) it via **Sileo** or **Zebra** by opening the `.deb`.
 
 ---
 
