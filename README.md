@@ -6,12 +6,6 @@
 
 <img width="1280" height="573" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />
 
----
-
-<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />
-
-
-
 ## ✨ Features
 
 - **System-wide injection** via `com.apple.UIKit` and `com.apple.springboard` — no per-app setup required.
@@ -38,6 +32,10 @@
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
 2. Download the correct `.deb` for your environment (see table).
 3. Install (patch first if roothide) it via **Sileo** or **Zebra** by opening the `.deb`.
+
+---
+
+<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />
 
 ---
 
