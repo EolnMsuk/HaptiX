@@ -3,7 +3,7 @@ Name: HaptiX
 Depends: mobilesubstrate, preferenceloader, com.opa334.altlist
 Version: 1.0.4
 Architecture: iphoneos-arm64
-Description: System-wide haptic feedback tweak for iOS 13–17. Configurable profiles, per-app exclusions, and SpringBoard hardware button support. Rootless and rootful packages available.
+Description: A system-wide haptic feedback tweak for iOS 13–17 (with options).
 Maintainer: EolnMsuk
 Author: EolnMsuk
 Section: Tweaks
