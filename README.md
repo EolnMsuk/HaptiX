@@ -4,7 +4,13 @@
 
 ---
 
-<img width="1280" height="476" alt="banner" src="https://github.com/user-attachments/assets/ffe937a6-2f7f-43a4-ba57-47d53d002df1" />
+<img width="1280" height="573" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />
+
+---
+
+<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />
+
+
 
 ## ✨ Features
 
