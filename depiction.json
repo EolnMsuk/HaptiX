@@ -1,6 +1,8 @@
 {
   "minVersion": "0.1",
   "class": "DepictionTabView",
+  "headerImage": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/refs/heads/main/haptixprefs/Resources/HaptiX.png",
+  "tintColor": "#FF3B30",
   "tabs": [
     {
       "tabname": "Details",
