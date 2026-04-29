@@ -4,7 +4,7 @@
 
 ---
 
-<img width="1280" height="573" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />
+[<img width="1280" height="573" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />](https://www.reddit.com/r/jailbreak_/comments/1sz8wa9/haptix_system_wide_native_haptics_for_ios_1317/)
 
 ## ✨ Features
 
@@ -35,7 +35,7 @@
 
 ---
 
-<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />
+[<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />](https://www.reddit.com/r/jailbreak_/comments/1sz8wa9/haptix_system_wide_native_haptics_for_ios_1317/)
 
 ---
 
