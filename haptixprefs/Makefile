@@ -1,5 +1,4 @@
-TARGET := iphone:clang:16.5:13.0
-THEOS_PACKAGE_SCHEME ?= rootless
+TARGET ?= iphone:clang:16.5:13.0
 
 include $(THEOS)/makefiles/common.mk
 
@@ -11,9 +10,7 @@ haptixprefs_PRIVATE_FRAMEWORKS = Preferences
 haptixprefs_EXTRA_FRAMEWORKS = AltList
 haptixprefs_INSTALL_PATH = /Library/PreferenceBundles
 
-ALTLIST_FRAMEWORK_SEARCH_PATH ?= ../vendor
-
-haptixprefs_CFLAGS = -fobjc-arc -F$(ALTLIST_FRAMEWORK_SEARCH_PATH)
-haptixprefs_LDFLAGS = -F$(ALTLIST_FRAMEWORK_SEARCH_PATH)
+haptixprefs_CFLAGS = -fobjc-arc -F$(THEOS_PROJECT_DIR)/vendor
+haptixprefs_LDFLAGS = -F$(THEOS_PROJECT_DIR)/vendor
 
 include $(THEOS_MAKE_PATH)/bundle.mk
