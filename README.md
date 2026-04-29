@@ -31,8 +31,6 @@
 | `iphoneos-arm.deb` | Palera1n (rootful mode) | iOS 15 – 17 |
 | `iphoneos-arm_legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 |
 
-See [COMPATIBILITY.md](COMPATIBILITY.md) for more detail.
-
 ---
 
 ## 📥 Installation
