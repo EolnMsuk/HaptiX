@@ -105,7 +105,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**iOS 13 – 17**\n\n| Package | Jailbreak |\n|---|---|\n| `iphoneos-arm64` (rootless) | Dopamine 2, RootHide, palera1n rootless |\n| `iphoneos-arm` (rootful) | palera1n rootful |\n| `iphoneos-arm` legacy | Checkra1n, unc0ver, Electra (iOS 13–14) |",
+          "markdown": "**iOS 13 – 17**\n\n• `iphoneos-arm64` rootless — Dopamine 2, RootHide, palera1n rootless\n• `iphoneos-arm` rootful — palera1n rootful\n• `iphoneos-arm` legacy — Checkra1n, unc0ver, Electra (iOS 13–14)",
           "useRawFormat": false
         },
         {
@@ -116,6 +116,12 @@
           "class": "DepictionTableButtonView",
           "title": "View Source on GitHub",
           "action": "https://github.com/EolnMsuk/HaptiX",
+          "openExternal": true
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Donate via Venmo",
+          "action": "https://venmo.com/user/eolnmsuk",
           "openExternal": true
         },
         {
