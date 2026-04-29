@@ -15,8 +15,8 @@
         {
           "class": "DepictionImageView",
           "URL": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/refs/heads/main/haptixprefs/Resources/banner.png",
-          "width": 1484,
-          "height": 552,
+          "width": 1280,
+          "height": 476,
           "cornerRadius": 0
         },
         {
