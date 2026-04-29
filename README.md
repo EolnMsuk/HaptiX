@@ -6,7 +6,6 @@
 
 <img width="1280" height="476" alt="banner" src="https://github.com/user-attachments/assets/ffe937a6-2f7f-43a4-ba57-47d53d002df1" />
 
-
 ## ✨ Features
 
 - **System-wide injection** via `com.apple.UIKit` and `com.apple.springboard` — no per-app setup required.
