@@ -1,9 +1,7 @@
-name: Build iOS Tweak
+name: Compile & Release Tweak
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
@@ -11,110 +9,138 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    runs-on: macos-latest
+  build-modern:
+    runs-on: macos-14
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Theos Environment
+      - name: Setup Theos
         uses: Randomblock1/theos-action@v1
         with:
           theos-sdks: 'https://github.com/theos/sdks'
 
-      - name: Fix Line Endings
+      - name: Download iPhoneOS16.5.sdk
         run: |
-          brew install dos2unix
-          dos2unix control
+          mkdir -p $THEOS/sdks
+          curl -LO https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz
+          tar -xf iPhoneOS16.5.sdk.tar.xz -C $THEOS/sdks/
+          rm *.tar.xz
 
-      - name: Extract Version
-        id: version
-        run: echo "version=$(grep '^Version:' control | awk '{print $2}')" >> $GITHUB_OUTPUT
-
-      # ── Build 1: Rootless (iOS 15+, new AltList) ──────────────────────────
-      - name: Build Rootless Package
-        run: make package FINALPACKAGE=1
-
-      - name: Stage Rootless .deb
+      - name: Extract Tweak Version
+        id: get_version
         run: |
-          mkdir -p dist
-          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm64.deb"
+          VERSION=$(grep -i '^Version:' control | awk '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Clean Build Artifacts
-        run: make clean && rm -f packages/*.deb
+      - name: Prepare Output Directory
+        run: mkdir -p output
 
-      # ── Build 2: Rootful (iOS 15+, new AltList) ───────────────────────────
-      - name: Build Rootful Package
-        run: make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=
-
-      - name: Stage Rootful .deb
+      - name: Build Modern Targets (iOS 15+)
         run: |
-          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm.deb"
+          rm -rf vendor/AltList.framework
+          cp -R vendor/AltList_New.framework vendor/AltList.framework
 
-      - name: Clean Build Artifacts (pre-legacy)
-        run: make clean && rm -f packages/*.deb
+          make clean
+          make package FINALPACKAGE=1 SYSROOT=$THEOS/sdks/iPhoneOS16.5.sdk TARGET="iphone:clang:16.5:15.0" ARCHS="arm64 arm64e"
+          mv packages/*.deb output/com.eolnmsuk.haptix_${{ env.VERSION }}_iphoneos-arm.deb
 
-      # ── Build 3: Rootful Legacy (iOS 13–14, old AltList) ──────────────────
-      - name: Prepare Legacy AltList Framework
-        run: |
-          mkdir -p vendor/legacy
-          cp -r vendor/AltList_Old.framework vendor/legacy/AltList.framework
-          # Strip the arm64e slice — its fat-header entry says arm64e but the
-          # slice itself uses the old ABI (arm64e.old), which Xcode 15+ linkers
-          # reject even when linking arm64. Legacy targets only need arm64.
-          lipo vendor/legacy/AltList.framework/AltList \
-            -remove arm64e \
-            -output vendor/legacy/AltList.framework/AltList
+          make clean
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless SYSROOT=$THEOS/sdks/iPhoneOS16.5.sdk TARGET="iphone:clang:16.5:15.0" ARCHS="arm64 arm64e"
+          mv packages/*.deb output/com.eolnmsuk.haptix_${{ env.VERSION }}_iphoneos-arm64.deb
 
-      - name: Build Rootful Legacy Package
-        run: make -f Makefile.legacy package FINALPACKAGE=1
-
-      - name: Stage Rootful Legacy .deb
-        run: |
-          cp packages/*.deb "dist/com.eolnmsuk.haptix_${{ steps.version.outputs.version }}_iphoneos-arm_legacy.deb"
-
-      - name: Clean Build Artifacts (post-legacy)
-        run: make clean && rm -f packages/*.deb
-
-      # ── Artifacts ─────────────────────────────────────────────────────────
-      - name: Upload Rootless .deb as Artifact
+      - name: Upload Modern Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: HaptiX-Rootless-Deb
-          path: dist/*_iphoneos-arm64.deb
+          name: HaptiX-Modern
+          path: output/*
 
-      - name: Upload Rootful .deb as Artifact
+  build-legacy:
+    runs-on: macos-14
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Theos
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-sdks: 'https://github.com/theos/sdks'
+
+      - name: Download iPhoneOS14.5.sdk
+        run: |
+          mkdir -p $THEOS/sdks
+          curl -LO https://github.com/theos/sdks/releases/latest/download/iPhoneOS14.5.sdk.tar.xz
+          tar -xf iPhoneOS14.5.sdk.tar.xz -C $THEOS/sdks/
+          rm *.tar.xz
+
+      - name: Extract Tweak Version
+        id: get_version
+        run: |
+          VERSION=$(grep -i '^Version:' control | awk '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Prepare Output Directory
+        run: mkdir -p output
+
+      - name: Build Legacy Target (iOS 13–14)
+        run: |
+          rm -rf vendor/AltList.framework
+          cp -R vendor/AltList_Old.framework vendor/AltList.framework
+          lipo -thin arm64 vendor/AltList.framework/AltList -output vendor/AltList.framework/AltList
+
+          make clean
+          make package FINALPACKAGE=1 SYSROOT=$THEOS/sdks/iPhoneOS14.5.sdk TARGET="iphone:clang:14.5:13.0" ARCHS="arm64"
+          mv packages/*.deb output/com.eolnmsuk.haptix_${{ env.VERSION }}_iphoneos-arm_legacy.deb
+
+      - name: Upload Legacy Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: HaptiX-Rootful-Deb
-          path: dist/*_iphoneos-arm.deb
+          name: HaptiX-Legacy
+          path: output/*
 
-      - name: Upload Rootful Legacy .deb as Artifact
-        uses: actions/upload-artifact@v4
+  release:
+    needs: [build-modern, build-legacy]
+    runs-on: macos-14
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      VERSION: ${{ needs.build-modern.outputs.version }}
+    steps:
+      - name: Download Modern Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: HaptiX-Rootful-Legacy-Deb
-          path: dist/*_iphoneos-arm_legacy.deb
+          name: HaptiX-Modern
+          path: output/
 
-      # ── Draft Release ──────────────────────────────────────────────────────
-      - name: Create Draft Release
-        if: github.event_name != 'pull_request'
+      - name: Download Legacy Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: HaptiX-Legacy
+          path: output/
+
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: HaptiX v${{ steps.version.outputs.version }}
+          tag_name: v${{ env.VERSION }}-b${{ github.run_number }}
+          name: "HaptiX v${{ env.VERSION }}"
+          files: output/*
           draft: true
-          make_latest: false
-          files: dist/*.deb
-          generate_release_notes: false
           body: |
-            ## v${{ steps.version.outputs.version }} - Release Notes:
+            Automated builds of HaptiX v${{ env.VERSION }}.
 
-            ---
+            ### Compatibility Guide
 
-            ## Compatibility
-
-            | Package | Jailbreak | iOS |
-            |---|---|---|
-            | `iphoneos-arm64.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 |
-            | `iphoneos-arm.deb` | Palera1n (rootful mode) | iOS 15 – 17 |
-            | `iphoneos-arm_legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 |
+            | File | For |
+            |---|---|
+            | `*_iphoneos-arm64.deb` | iOS 15+ Rootless (Dopamine 2 / RootHide / palera1n rootless) |
+            | `*_iphoneos-arm.deb` | iOS 15+ Rootful (palera1n rootful) |
+            | `*_iphoneos-arm_legacy.deb` | iOS 13–14 Rootful (Checkra1n / Unc0ver / Electra) |
