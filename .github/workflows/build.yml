@@ -107,7 +107,7 @@ jobs:
           files: dist/*.deb
           generate_release_notes: false
           body: |
-            # v${{ steps.version.outputs.version }} - Release Notes:
+            ## v${{ steps.version.outputs.version }} - Release Notes:
 
             ---
 
