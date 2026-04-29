@@ -2,23 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
     <key>CFBundleExecutable</key>
-    <string>haptixprefs</string>
+    <string>DiCoyPrefs</string>
     <key>CFBundleIdentifier</key>
-    <string>com.eolnmsuk.haptixprefs</string>
+    <string>com.dicoy.prefs</string>
     <key>CFBundleName</key>
-    <string>haptixprefs</string>
+    <string>DiCoy</string>
     <key>CFBundlePackageType</key>
     <string>BNDL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.5</string>
+    <string>1.0.1</string>
     <key>CFBundleVersion</key>
-    <string>1.0.5</string>
-    <key>DTPlatformName</key>
-    <string>iphoneos</string>
+    <string>1.0.1</string>
     <key>MinimumOSVersion</key>
-    <string>13.0</string>
+    <string>15.0</string>
     <key>NSPrincipalClass</key>
-    <string>HaptixPrefsRootListController</string>
+    <string>DiCoyPrefsListController</string>
 </dict>
 </plist>

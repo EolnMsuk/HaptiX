@@ -2,276 +2,119 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>title</key>
+    <string>DiCoy</string>
     <key>items</key>
     <array>
+
+        <!-- ============================================================ -->
+        <!-- Mode selection                                                -->
+        <!-- ============================================================ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
-            <string>Global Settings</string>
+            <string>Camera Feed Mode</string>
+            <key>footerText</key>
+            <string>Screen Mirror replaces the camera with a live capture of the device display. Media Inject plays a local video or image file instead.</string>
         </dict>
+
+        <!-- PSSegmentCell presents a segmented control (Off / Screen Mirror / Media Inject). -->
+        <!-- "PostNotification" causes PSListController to call notify_post() automatically  -->
+        <!-- whenever the value changes, so connected tweaks reconfigure in real time.        -->
         <dict>
             <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <false/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>enabled</string>
+            <string>PSSegmentCell</string>
             <key>label</key>
-            <string>Enable HaptiX</string>
+            <string>Mode</string>
+            <key>key</key>
+            <string>mode</string>
+            <key>default</key>
+            <string>off</string>
+            <key>defaults</key>
+            <string>com.dicoy.prefs</string>
             <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+            <string>com.dicoy.modeChanged</string>
+            <key>values</key>
+            <array>
+                <string>off</string>
+                <string>screenMirror</string>
+                <string>mediaInject</string>
+            </array>
+            <key>titles</key>
+            <array>
+                <string>Off</string>
+                <string>Screen Mirror</string>
+                <string>Media Inject</string>
+            </array>
+        </dict>
+
+        <!-- ============================================================ -->
+        <!-- Media Injection settings                                      -->
+        <!-- ============================================================ -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Media Injection</string>
+            <key>footerText</key>
+            <string>Absolute path to a .mp4, .mov, or image file on the device. The file is read directly from disk; no import needed.</string>
         </dict>
 
         <dict>
             <key>cell</key>
-            <string>PSGroupCell</string>
+            <string>PSEditTextCell</string>
             <key>label</key>
-            <string>Haptic Profile</string>
-            <key>footerText</key>
-            <string>Controls the intensity and character of feedback from the Taptic Engine.</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
+            <string>File Path</string>
             <key>key</key>
-            <string>hapticStyle</string>
-            <key>label</key>
-            <string>Feedback Style</string>
+            <string>mediaFilePath</string>
             <key>default</key>
+            <string></string>
+            <key>placeholder</key>
+            <string>/var/mobile/Media/DCIM/inject.mp4</string>
+            <key>defaults</key>
+            <string>com.dicoy.prefs</string>
+            <key>PostNotification</key>
+            <string>com.dicoy.modeChanged</string>
+            <key>keyboardType</key>
             <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-                <integer>3</integer>
-                <integer>4</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Light</string>
-                <string>Medium</string>
-                <string>Heavy</string>
-                <string>Soft</string>
-                <string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
 
+        <!-- ============================================================ -->
+        <!-- Capture settings                                              -->
+        <!-- ============================================================ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
-            <string>Hardware &amp; System</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookAppSwitcher</string>
-            <key>label</key>
-            <string>App Switcher &amp; Gestures</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookVolume</string>
-            <key>label</key>
-            <string>Volume Buttons</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookPower</string>
-            <key>label</key>
-            <string>Power Button</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookLockScreen</string>
-            <key>label</key>
-            <string>Lock/Unlock Events</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookIcons</string>
-            <key>label</key>
-            <string>Homescreen Icons</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>label</key>
-            <string>App Interfaces (UIKit)</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookKeyboard</string>
-            <key>label</key>
-            <string>Keyboard Presses &amp; Deletes</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookButtons</string>
-            <key>label</key>
-            <string>Standard Buttons</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookSwitches</string>
-            <key>label</key>
-            <string>UI Toggles &amp; Switches</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <true/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookCells</string>
-            <key>label</key>
-            <string>Table/List Cells</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>default</key>
-            <false/>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>hookScrolling</string>
-            <key>label</key>
-            <string>Scroll Collision Edge</string>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>label</key>
-            <string>Exceptions</string>
+            <string>Capture Settings</string>
             <key>footerText</key>
-            <string>Select apps where HaptiX will be automatically disabled.</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>ATLApplicationListMultiSelectionController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>blacklistedApps</string>
-            <key>label</key>
-            <string>Excluded Apps</string>
-            <key>sections</key>
-            <array>
-                <dict>
-                    <key>sectionType</key>
-                    <string>Visible</string>
-                </dict>
-            </array>
-            <key>showIdentifiersAsSubtitle</key>
-            <true/>
-            <key>defaultApplicationSwitchValue</key>
-            <false/>
-            <key>useSearchBar</key>
-            <true/>
+            <string>60 FPS increases fidelity but raises CPU and battery usage. Requires restarting the camera app to take effect.</string>
         </dict>
 
         <dict>
             <key>cell</key>
-            <string>PSGroupCell</string>
+            <string>PSSegmentCell</string>
             <key>label</key>
-            <string>Maintenance</string>
+            <string>Frame Rate</string>
+            <key>key</key>
+            <string>fps</string>
+            <key>default</key>
+            <string>30</string>
+            <key>defaults</key>
+            <string>com.dicoy.prefs</string>
+            <key>values</key>
+            <array>
+                <string>30</string>
+                <string>60</string>
+            </array>
+            <key>titles</key>
+            <array>
+                <string>30 FPS</string>
+                <string>60 FPS</string>
+            </array>
         </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSButtonCell</string>
-            <key>label</key>
-            <string>Reset Settings to Default</string>
-            <key>action</key>
-            <string>resetSettings</string>
-            <key>alignment</key>
-            <integer>2</integer>
-        </dict>
+
     </array>
-    <key>title</key>
-    <string>HaptiX</string>
 </dict>
 </plist>

@@ -5,17 +5,15 @@
     <key>entry</key>
     <dict>
         <key>bundle</key>
-        <string>haptixprefs</string>
+        <string>DiCoyPrefs</string>
         <key>cell</key>
         <string>PSLinkCell</string>
         <key>detail</key>
-        <string>HaptixPrefsRootListController</string>
-        <key>icon</key>
-        <string>icon.png</string>
+        <string>DiCoyPrefsListController</string>
         <key>isController</key>
         <true/>
         <key>label</key>
-        <string>HaptiX</string>
+        <string>DiCoy</string>
     </dict>
 </dict>
 </plist>
