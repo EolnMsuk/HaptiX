@@ -56,10 +56,7 @@
     UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         CFStringRef domain = CFSTR("com.eolnmsuk.haptix");
 
-        // Remove every key through the CFPreferences API so cfprefsd flushes both its
-        // in-memory cache and the backing plist atomically.  Deleting the file directly
-        // via NSFileManager leaves the daemon cache intact: CFPreferencesCopyAppValue
-        // would still return the old values until cfprefsd re-reads disk on its own schedule.
+        // Delete all existing keys first (clears blacklist bundle-ID entries and any stale keys).
         CFArrayRef keys = CFPreferencesCopyKeyList(domain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
         if (keys) {
             for (CFIndex i = 0, count = CFArrayGetCount(keys); i < count; i++) {
@@ -67,6 +64,23 @@
             }
             CFRelease(keys);
         }
+
+        // Write explicit defaults for every known key. A deletion alone does not trigger
+        // cfprefsd's per-process cache invalidation in long-running remote processes
+        // (e.g. SpringBoard); an explicit write always does.
+        CFPreferencesSetAppValue(CFSTR("enabled"),         kCFBooleanFalse,            domain);
+        CFPreferencesSetAppValue(CFSTR("hookKeyboard"),    kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookButtons"),     kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookSwitches"),    kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookCells"),       kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookScrolling"),   kCFBooleanFalse,            domain);
+        CFPreferencesSetAppValue(CFSTR("hookVolume"),      kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookPower"),       kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookIcons"),       kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookLockScreen"),  kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hookAppSwitcher"), kCFBooleanTrue,             domain);
+        CFPreferencesSetAppValue(CFSTR("hapticStyle"),     (__bridge CFNumberRef)@(0), domain);
+
         CFPreferencesAppSynchronize(domain);
 
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
