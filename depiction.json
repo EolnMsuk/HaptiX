@@ -25,7 +25,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "HaptiX brings Taptic Engine feedback to every corner of iOS — hardware buttons, the keyboard, UI controls, SpringBoard gestures, and more. Fine-tune which interactions fire and dial in the exact feedback style that feels right.",
+          "markdown": "HaptiX brings Taptic Engine feedback to every corner of iOS — hardware buttons, the keyboard, UI controls, navigation gestures, and more. Fine-tune which interactions fire and dial in the exact feedback style that feels right.",
           "useRawFormat": false
         },
         {
@@ -42,7 +42,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Choose from all five `UIImpactFeedbackGenerator` intensities:\n\n• **Light** — subtle, gentle tap\n• **Medium** — balanced, everyday feel\n• **Heavy** — firm, pronounced click\n• **Soft** — rounded, cushioned pulse\n• **Rigid** — sharp, mechanical snap",
+          "markdown": "Choose from five distinct feedback intensities:\n\n• **Light** — subtle, gentle tap\n\n• **Medium** — balanced, everyday feel\n\n• **Heavy** — firm, pronounced click\n\n• **Soft** — rounded, cushioned pulse\n\n• **Rigid** — sharp, mechanical snap",
           "useRawFormat": false
         },
         {
@@ -50,12 +50,12 @@
         },
         {
           "class": "DepictionSubheaderView",
-          "title": "Hardware & SpringBoard",
+          "title": "Hardware & System",
           "useBoldText": true
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "• **Volume Buttons** — each press up or down\n• **Power Button** — single press\n• **Lock / Unlock Events** — screen lock from any source\n• **Homescreen Icons** — tap highlight on the home screen\n• **App Switcher & Gestures** — swipe-up and card transitions",
+          "markdown": "• **Volume Buttons** — each press up or down\n\n• **Power Button** — single press\n\n• **Lock / Unlock Events** — screen lock from any source\n\n• **Home Screen Icons** — tap highlight on the home screen\n\n• **App Switcher & Gestures** — swipe-up and card transitions",
           "useRawFormat": false
         },
         {
@@ -63,12 +63,12 @@
         },
         {
           "class": "DepictionSubheaderView",
-          "title": "App Interfaces (UIKit)",
+          "title": "App Interfaces",
           "useBoldText": true
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "• **Keyboard Presses & Deletes** — every key tap and backspace\n• **Standard Buttons** — `UIControl` touch-up events across all apps\n• **UI Toggles & Switches** — `UISwitch` state changes\n• **Table / List Cells** — selection in any `UITableViewCell`\n• **Scroll Collision Edge** *(opt-in)* — fires when a `UIScrollView` reaches its top or bottom boundary while dragging",
+          "markdown": "• **Keyboard** — every key tap and backspace\n\n• **Standard Buttons** — interacting with buttons across all apps\n\n• **Toggles & Switches** — turning settings on or off\n\n• **Lists & Menus** — selecting items in any menu\n\n• **Scroll Boundaries** *(opt-in)* — a subtle bump when you reach the top or bottom of a scrolling page",
           "useRawFormat": false
         },
         {
@@ -81,7 +81,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Blacklist any app via the **Excluded Apps** picker (powered by AltList). HaptiX disables itself automatically in those apps — no respring needed.",
+          "markdown": "Turn off HaptiX for specific apps via the **Excluded Apps** menu. It disables itself automatically in those apps — no respring or restart needed.",
           "useRawFormat": false
         },
         {
@@ -94,7 +94,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "All toggles apply instantly via Darwin notifications — no respring, no delay. Preferences are read through `CFPreferencesCopyAppValue`, which bypasses the sandbox and works correctly in every injected process including native Apple apps.",
+          "markdown": "All toggles and settings apply instantly. There is no delay and no need to respring your device. It just works seamlessly across all your downloaded and native Apple apps.",
           "useRawFormat": false
         },
         {
@@ -107,7 +107,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**iOS 13 – 17**\n\n• `iphoneos-arm64` rootless — Dopamine 2, RootHide, palera1n rootless\n• `iphoneos-arm` rootful — palera1n rootful\n• `iphoneos-arm` legacy — Checkra1n, unc0ver, Electra (iOS 13–14)",
+          "markdown": "**iOS 13 – 17**\n\n• **Rootless** — Dopamine, RootHide, palera1n\n\n• **Rootful** — palera1n\n\n• **Legacy** — checkra1n, unc0ver, Electra (iOS 13–14)",
           "useRawFormat": false
         },
         {
