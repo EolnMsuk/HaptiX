@@ -2,6 +2,25 @@
 
 All notable changes to HaptiX are documented here.
 
+## [1.0.5] — 2026-04-28
+
+### Build
+- **Build system rewritten to match ADS in-place vendor swap pattern**: Removed `ALTLIST_FRAMEWORK_SEARCH_PATH` variable and `THEOS_PACKAGE_SCHEME` default from all Makefiles. All three builds now use the root `Makefile` with `TARGET` and `ARCHS` passed as CLI overrides (or defaulting via `?=`); the correct AltList is selected by swapping `vendor/AltList.framework` in-place before each build group.
+- **`Makefile`**: Replaced `THEOS_PACKAGE_SCHEME = rootless` and `TARGET :=` with `export ARCHS ?= arm64 arm64e` and `export TARGET ?= iphone:clang:16.5:15.0`. No `THEOS_PACKAGE_SCHEME` default — rootful is the natural absence of the variable. `make package` now produces a rootful build by default; `THEOS_PACKAGE_SCHEME=rootless` is required explicitly for rootless.
+- **`Makefile.legacy`**: Simplified to export only `ARCHS ?= arm64` and `TARGET ?= iphone:clang:14.5:13.0`. Removed `THEOS_PACKAGE_SCHEME` and `ALTLIST_FRAMEWORK_SEARCH_PATH` exports — legacy is rootful by absence; framework path is resolved via the in-place vendor swap.
+- **`haptixprefs/Makefile`**: Replaced `-F$(ALTLIST_FRAMEWORK_SEARCH_PATH)` with `-F$(THEOS_PROJECT_DIR)/vendor` hardcoded in both `CFLAGS` and `LDFLAGS`. Removed `THEOS_PACKAGE_SCHEME ?= rootless` and `ALTLIST_FRAMEWORK_SEARCH_PATH ?= ../vendor`. `TARGET` changed from `:=` to `?=` (overridable by CLI or parent).
+- **`haptixprefs/Makefile.legacy`**: Recreated as identical copy of `haptixprefs/Makefile`. Required because Theos `aggregate.mk` propagates `-f <filename>` to every subproject sub-make; without it, `make -f Makefile.legacy` at root fails inside `haptixprefs/`.
+- **`build.yml` — parallel CI jobs**: Replaced single sequential job with two parallel jobs: `build-modern` (rootful + rootless, SDK 16.5, `macos-14`) and `build-legacy` (iOS 13–14, SDK 14.5, `macos-14`). `release` job waits on both via `needs:`.
+- **`build.yml` — in-place vendor swap**: Both modern and legacy jobs now swap `vendor/AltList.framework` in-place (`rm -rf` + `cp -R`) before building rather than using a separate `vendor/legacy/` directory. `vendor/AltList.framework` is restored from `vendor/AltList_New.framework` after the legacy build.
+- **`build.yml` — `lipo -thin arm64`**: Legacy job now uses `lipo -thin arm64` (extract arm64 slice only) instead of `lipo -remove arm64e`. Semantically equivalent for the malformed `AltList_Old.framework` binary but unambiguous — extracts only what is needed rather than removing a named slice.
+- **`build_all.sh`**: New local build script mirroring the CI exactly. Handles the AltList vendor swap and restore, builds all three packages with the same SDK paths and CLI args as CI, and outputs named `.deb` files to `output/`.
+
+### Documentation
+- `CLAUDE.md`: Updated Build Commands (rootful is now the `make package` default; legacy prep uses in-place swap + `lipo -thin arm64`; added `build_all.sh`); updated Key Files entries for `Makefile`, `Makefile.legacy`, `haptixprefs/Makefile`, `haptixprefs/Makefile.legacy`, and `vendor/AltList_Old.framework`; added `build_all.sh` entry; corrected Preferences Path section to reflect CFPreferences-based `resetSettings` (no `/var/jb` file path detection).
+- `ProjectStructure.md`: Rewrote Build System section (parallel CI jobs, in-place swap, `lipo -thin arm64`, no path variable); updated file tree comments for `Makefile`, `Makefile.legacy`, `haptixprefs/Makefile`, `vendor/AltList.framework`, `vendor/AltList_Old.framework`, `vendor/AltList_New.framework`, and `build.yml`; added `build_all.sh` to file tree.
+
+---
+
 ## [1.0.4] — 2026-04-28
 
 ### Build

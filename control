@@ -1,7 +1,7 @@
 Package: com.eolnmsuk.haptix
 Name: HaptiX
 Depends: mobilesubstrate, preferenceloader, com.opa334.altlist
-Version: 1.0.4
+Version: 1.0.5
 Architecture: iphoneos-arm64
 Description: A system-wide haptic feedback tweak for iOS 13–17 (with options).
 Maintainer: EolnMsuk
