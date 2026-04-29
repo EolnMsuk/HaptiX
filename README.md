@@ -1,4 +1,4 @@
-# HaptiX
+# HaptiX 📳
 
 **HaptiX** is a system-wide haptic feedback tweak for iOS 13–17, supporting both rootless and rootful jailbreaks. It uses Apple's `UIImpactFeedbackGenerator` to deliver clean, hardware-accelerated Taptic Engine feedback across every app.
 
