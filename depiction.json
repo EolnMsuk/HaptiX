@@ -1,77 +1,215 @@
 {
   "minVersion": "0.1",
-  "headerImage": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/main/icon@2x.png",
-  "packageIcon": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/main/icon@2x.png",
-  "tintColor": "#FF6B35",
+  "class": "DepictionTabView",
   "tabs": [
     {
       "tabname": "Details",
+      "class": "DepictionStackView",
       "views": [
         {
+          "class": "DepictionImageView",
+          "URL": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/refs/heads/main/haptixprefs/Resources/banner.png",
+          "width": 0,
+          "height": 175,
+          "cornerRadius": 0
+        },
+        {
+          "class": "DepictionScreenshotsView",
+          "itemCornerRadius": 12,
+          "itemSize": "{320, 568}",
+          "screenshots": [
+            {
+              "class": "DepictionScreenshot",
+              "url": "https://raw.githubusercontent.com/EolnMsuk/HaptiX/refs/heads/main/haptixprefs/Resources/HaptiX.png",
+              "accessibilityText": "HaptiX"
+            }
+          ]
+        },
+        {
+          "class": "DepictionSpacerView",
+          "spacing": 16
+        },
+        {
           "class": "DepictionMarkdownView",
-          "markdown": "**HaptiX** delivers system-wide haptic feedback on iOS 13–17, supporting both rootless (Dopamine 2 / palera1n) and rootful jailbreaks. Built on `UIImpactFeedbackGenerator` for clean, hardware-accelerated feedback with zero double-fire.",
-          "useSpacing": true
+          "markdown": "HaptiX brings Taptic Engine feedback to every corner of iOS — hardware buttons, the keyboard, UI controls, SpringBoard gestures, and more. Fine-tune which interactions fire and dial in the exact feedback style that feels right.",
+          "useRawFormat": false
+        },
+        {
+          "class": "DepictionSpacerView",
+          "spacing": 8
         },
         {
           "class": "DepictionSeparatorView"
         },
         {
-          "class": "DepictionHeaderView",
-          "title": "Features"
+          "class": "DepictionSubheaderView",
+          "title": "Haptic Style",
+          "useBoldText": true
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- 5 Taptic Engine profiles: Light, Medium, Heavy, Soft, Rigid\n- 50ms cooldown gate prevents double-fire\n- SpringBoard hooks: Volume, Power, Lock/Unlock, Home Screen Icons, App Switcher\n- UIKit hooks: Keyboard, Buttons, Switches, Table Cells, Scroll edges\n- Per-app exclusion list via AltList\n- Hot-reload — no respring required when changing settings",
-          "useSpacing": true
+          "markdown": "Choose from all five `UIImpactFeedbackGenerator` intensities:\n\n• **Light** — subtle, gentle tap\n• **Medium** — balanced, everyday feel\n• **Heavy** — firm, pronounced click\n• **Soft** — rounded, cushioned pulse\n• **Rigid** — sharp, mechanical snap",
+          "useRawFormat": false
         },
         {
           "class": "DepictionSeparatorView"
         },
         {
-          "class": "DepictionTableTextView",
-          "title": "Version",
-          "text": "1.0.2"
+          "class": "DepictionSubheaderView",
+          "title": "Hardware & SpringBoard",
+          "useBoldText": true
         },
         {
-          "class": "DepictionTableTextView",
+          "class": "DepictionMarkdownView",
+          "markdown": "• **Volume Buttons** — each press up or down\n• **Power Button** — single press\n• **Lock / Unlock Events** — screen lock from any source\n• **Homescreen Icons** — tap highlight on the home screen\n• **App Switcher & Gestures** — swipe-up and card transitions",
+          "useRawFormat": false
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "App Interfaces (UIKit)",
+          "useBoldText": true
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "• **Keyboard Presses & Deletes** — every key tap and backspace\n• **Standard Buttons** — `UIControl` touch-up events across all apps\n• **UI Toggles & Switches** — `UISwitch` state changes\n• **Table / List Cells** — selection in any `UITableViewCell`\n• **Scroll Collision Edge** *(opt-in)* — fires when a `UIScrollView` reaches its top or bottom boundary while dragging",
+          "useRawFormat": false
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "Per-App Exclusions",
+          "useBoldText": true
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Blacklist any app via the **Excluded Apps** picker (powered by AltList). HaptiX disables itself automatically in those apps — no respring needed.",
+          "useRawFormat": false
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "Settings & Preferences",
+          "useBoldText": true
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "All toggles apply instantly via Darwin notifications — no respring, no delay. Preferences are read through `CFPreferencesCopyAppValue`, which bypasses the sandbox and works correctly in every injected process including native Apple apps.",
+          "useRawFormat": false
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
           "title": "Compatibility",
-          "text": "iOS 13.0 – 17.0"
+          "useBoldText": true
         },
         {
-          "class": "DepictionTableTextView",
-          "title": "Architecture",
-          "text": "iphoneos-arm64 (Rootless + Rootful)"
+          "class": "DepictionMarkdownView",
+          "markdown": "**iOS 13 – 17**\n\n| Package | Jailbreak |\n|---|---|\n| `iphoneos-arm64` (rootless) | Dopamine 2, RootHide, palera1n rootless |\n| `iphoneos-arm` (rootful) | palera1n rootful |\n| `iphoneos-arm` legacy | Checkra1n, unc0ver, Electra (iOS 13–14) |",
+          "useRawFormat": false
         },
         {
-          "class": "DepictionTableTextView",
-          "title": "Developer",
-          "text": "eolnmsuk"
+          "class": "DepictionSpacerView",
+          "spacing": 16
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "View Source on GitHub",
+          "action": "https://github.com/EolnMsuk/HaptiX",
+          "openExternal": true
+        },
+        {
+          "class": "DepictionSpacerView",
+          "spacing": 16
         }
       ]
     },
     {
-      "tabname": "Changelog",
+      "tabname": "Information",
+      "class": "DepictionStackView",
       "views": [
         {
-          "class": "DepictionHeaderView",
-          "title": "1.0.2"
+          "class": "DepictionSpacerView",
+          "spacing": 16
         },
         {
-          "class": "DepictionMarkdownView",
-          "markdown": "- Expanded support to iOS 13.0 – 17.0\n- Added rootful jailbreak support alongside existing rootless support\n- Preferences path resolved dynamically at runtime (no recompile needed)\n- CI now produces separate rootless and rootful `.deb` packages",
-          "useSpacing": true
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0.5"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Author",
+          "text": "EolnMsuk"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Maintainer",
+          "text": "EolnMsuk"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Package",
+          "text": "com.eolnmsuk.haptix"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "iOS Compatibility",
+          "text": "13.0 – 17.x"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Architecture",
+          "text": "arm64, arm64e"
         },
         {
           "class": "DepictionSeparatorView"
         },
         {
-          "class": "DepictionHeaderView",
-          "title": "1.0.1"
+          "class": "DepictionSubheaderView",
+          "title": "Dependencies",
+          "useBoldText": true
         },
         {
-          "class": "DepictionMarkdownView",
-          "markdown": "- Initial public release\n- Replaced `AudioServicesPlaySystemSound` with `UIImpactFeedbackGenerator`\n- Fixed cooldown: 80ms → 50ms\n- Added 5 configurable haptic profiles\n- Corrected AltList blacklist integration",
-          "useSpacing": true
+          "class": "DepictionTableTextView",
+          "title": "MobileSubstrate",
+          "text": "Hooking framework"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "PreferenceLoader",
+          "text": "Settings pane discovery"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "AltList",
+          "text": "com.opa334.altlist — app exclusion picker"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Report an Issue",
+          "action": "https://github.com/EolnMsuk/HaptiX/issues",
+          "openExternal": true
+        },
+        {
+          "class": "DepictionSpacerView",
+          "spacing": 16
         }
       ]
     }
