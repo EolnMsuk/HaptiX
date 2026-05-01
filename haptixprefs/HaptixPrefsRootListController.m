@@ -3,34 +3,42 @@
 #import <mach-o/dyld.h>
 #import "HaptixPrefsRootListController.h"
 
+@interface HaptixAdvancedListController : PSListController
+@end
+
+@implementation HaptixAdvancedListController
+- (NSArray *)specifiers {
+    if (!_specifiers) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"Advanced" target:self];
+    }
+    return _specifiers;
+}
+@end
+
 @interface HaptixPrefsRootListController ()
 @property (nonatomic, strong) UIImageView *bannerImageView;
 @end
 
 static NSString *HXDetectJailbreakEnvironment(void) {
-    NSString *bundlePath = [[NSBundle bundleForClass:NSClassFromString(@"HaptixPrefsRootListController")] bundlePath];
-
-    // Pure rootless (Dopamine 2, palera1n rootless): bundle installed under /var/jb
-    if ([bundlePath hasPrefix:@"/var/jb"]) {
-        return @"Rootless";
-    }
-
-    // roothide Patcher converts the rootless package to rootful-style install paths,
-    // so the bundle appears at /Library/... rather than /var/jb/Library/...
-    // The physical marker file at /var/jb/.installed_roothide is placed by roothide
-    // during jailbreak setup and is accessible even under the path-remapping layer.
+    // roothide must be checked first. Its patcher remaps /var/jb paths to rootful-style
+    // locations, so /var/jb may still be visible while the bundle is at /Library/...
+    // The marker file and injected dylib are the reliable identifiers.
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
         return @"roothide";
     }
 
-    // Fallback: roothide injects its remapping library into every process.
-    // If NSFileManager cannot see /var/jb (e.g. future roothide versions tighten
-    // namespace visibility), the loaded-dylib scan still reliably identifies it.
     for (uint32_t i = 0; i < _dyld_image_count(); i++) {
         const char *name = _dyld_get_image_name(i);
         if (name && strstr(name, "roothide")) {
             return @"roothide";
         }
+    }
+
+    // Rootless (Dopamine 2, palera1n rootless): /var/jb exists as a symlink to the
+    // jailbreak mount. On Dopamine, NSBundle resolves the symlink so the bundle path
+    // does NOT start with "/var/jb" — checking directory existence is the reliable test.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]) {
+        return @"Rootless";
     }
 
     return @"Rootful";

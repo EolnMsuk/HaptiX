@@ -538,9 +538,7 @@
             <key>cell</key>
             <string>PSLinkCell</string>
             <key>detail</key>
-            <string>PSChildPaneController</string>
-            <key>file</key>
-            <string>Advanced</string>
+            <string>HaptixAdvancedListController</string>
             <key>label</key>
             <string>Per-Trigger Haptic Style</string>
         </dict>
