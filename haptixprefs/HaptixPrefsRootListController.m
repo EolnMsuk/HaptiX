@@ -15,21 +15,21 @@ static NSString *HXDetectJailbreakEnvironment(void) {
         return @"Rootless";
     }
 
-    // RootHide Patcher converts the rootless package to rootful-style install paths,
+    // roothide Patcher converts the rootless package to rootful-style install paths,
     // so the bundle appears at /Library/... rather than /var/jb/Library/...
-    // The physical marker file at /var/jb/.installed_roothide is placed by RootHide
+    // The physical marker file at /var/jb/.installed_roothide is placed by roothide
     // during jailbreak setup and is accessible even under the path-remapping layer.
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
-        return @"RootHide";
+        return @"roothide";
     }
 
-    // Fallback: RootHide injects its remapping library into every process.
-    // If NSFileManager cannot see /var/jb (e.g. future RootHide versions tighten
+    // Fallback: roothide injects its remapping library into every process.
+    // If NSFileManager cannot see /var/jb (e.g. future roothide versions tighten
     // namespace visibility), the loaded-dylib scan still reliably identifies it.
     for (uint32_t i = 0; i < _dyld_image_count(); i++) {
         const char *name = _dyld_get_image_name(i);
         if (name && strstr(name, "roothide")) {
-            return @"RootHide";
+            return @"roothide";
         }
     }
 
