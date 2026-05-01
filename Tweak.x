@@ -403,7 +403,7 @@ static void triggerHapticWithOverride(NSInteger overrideStyle) {
 %hook SiriUISiriStatusView
 - (void)didMoveToWindow {
     %orig;
-    if (self.window && hookSiri) triggerHapticWithOverride(style_hookSiri);
+    if (((UIView *)self).window && hookSiri) triggerHapticWithOverride(style_hookSiri);
 }
 %end
 
