@@ -25,89 +25,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "HaptiX brings Taptic Engine feedback to every corner of iOS — hardware buttons, the keyboard, UI controls, navigation gestures, and more. Fine-tune which interactions fire and dial in the exact feedback style that feels right.",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSpacerView",
-          "spacing": 8
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "Haptic Style",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "Choose from five distinct feedback intensities:\n\n• **Light** — subtle, gentle tap\n\n• **Medium** — balanced, everyday feel\n\n• **Heavy** — firm, pronounced click\n\n• **Soft** — rounded, cushioned pulse\n\n• **Rigid** — sharp, mechanical snap",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "Hardware & System",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "• **Volume Buttons** — each press up or down\n\n• **Power Button** — single press\n\n• **Lock / Unlock Events** — screen lock from any source\n\n• **Home Screen Icons** — tap highlight on the home screen\n\n• **App Switcher & Gestures** — swipe-up and card transitions",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "App Interfaces",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "• **Keyboard** — every key tap and backspace\n\n• **Standard Buttons** — interacting with buttons across all apps\n\n• **Toggles & Switches** — turning settings on or off\n\n• **Lists & Menus** — selecting items in any menu\n\n• **Scroll Boundaries** *(opt-in)* — a subtle bump when you reach the top or bottom of a scrolling page",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "Per-App Exclusions",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "Turn off HaptiX for specific apps via the **Excluded Apps** menu. It disables itself automatically in those apps — no respring or restart needed.",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "Settings & Preferences",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "All toggles and settings apply instantly. There is no delay and no need to respring your device. It just works seamlessly across all your downloaded and native Apple apps.",
-          "useRawFormat": false
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionSubheaderView",
-          "title": "Compatibility",
-          "useBoldText": true
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "**iOS 13 – 17**\n\n• **Rootless** — Dopamine, RootHide, palera1n\n\n• **Rootful** — palera1n\n\n• **Legacy** — checkra1n, unc0ver, Electra (iOS 13–14)",
+          "markdown": "HaptiX brings native Taptic Engine feedback to every corner of iOS — hardware buttons, keyboard, UI controls, navigation gestures, Control Center, Siri, folders, biometric unlock, passcode, call events, and more.\n\nChoose a global feedback intensity (Light, Medium, Heavy, Soft, or Rigid), or open **Advanced Settings** to override the haptic style per-trigger independently across all 30 triggers. Enable or disable triggers individually, exclude specific apps via AltList, and let all settings apply live — no respring required.\n\nCompatible with iOS 13–17 across rootless (Dopamine, RootHide, palera1n), rootful (palera1n), and legacy (checkra1n, unc0ver) jailbreaks.",
           "useRawFormat": false
         },
         {
@@ -143,7 +61,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.1.0"
+          "text": "1.2.0"
         },
         {
           "class": "DepictionTableTextView",

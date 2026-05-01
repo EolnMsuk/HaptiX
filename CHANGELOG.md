@@ -2,6 +2,21 @@
 
 All notable changes to HaptiX are documented here.
 
+## [1.2.0] — 2026-05-01
+
+### Added
+- **20 new triggers** across three categories, all individually toggleable and covered by Advanced Settings per-trigger style overrides:
+  - *Hardware & System*: Screenshot (`SSScreenCapturer`), Display Wake (`SBBacklightController`), Charger Connect/Disconnect (`SBUIController.ACPowerChanged`), Ringer Toggle (`SpringBoard._ringerChanged`), Reachability (`SBUIController.handleWillBeginReachabilityAnimation`).
+  - *System UI* (new Settings section): Control Center (`SBControlCenterController._willPresent`), CC Toggles & Modules (`CCUILabeledRoundButton` / `CCUIButtonModuleView.setHighlighted:`), Folder Open/Close (`SBFolderController`), Spotlight Search (`SBSearchScrollView.setSearchVisible:animated:`), Siri Activation (`SiriUISiriStatusView.didMoveToWindow`), Power Down Slider (`SBPowerDownViewController.viewDidAppear:`), Biometric Unlock (`SBDashBoardLockScreenEnvironment.setAuthenticated:`), Home Bar Gesture (`SBFluidSwitcherGestureManager._handleGestureBeganWithGestureRecognizer:`), Passcode Key Press (`SBUIPasscodeLockViewBase._sendDelegateKeypadKeyDown`), App Termination (`SBApplication._didExitWithContext:`), Call Status Change (`TUCall._handleStatusChange`), Lock Sound (`SBSleepWakeHardwareButtonInteraction._playLockSound`), Respring (`SpringBoard.applicationDidFinishLaunching:`).
+  - *App Interfaces (UIKit)*: Text Selection Callout (`UICalloutBar.buttonPressed:`), System Alerts (`UIAlertController.viewDidAppear:`).
+- **Advanced Settings sub-page**: The per-trigger haptic style section is now a dedicated child pane (`Advanced.plist`, loaded via `PSChildPaneController`) instead of inline cells. A single "Per-Trigger Haptic Style" row in the root settings opens the sub-page, which organises all 30 style overrides by group (App Interfaces, Hardware & System, System UI).
+
+### Changed
+- **`resetSettings`**: Extended to write explicit defaults for all 20 new bool keys and 20 new `style_*` integer keys, ensuring cfprefsd cache invalidation covers the full trigger set.
+- **Root.plist section order**: Added "System UI" group between "Hardware & System" and "App Interfaces (UIKit)".
+
+---
+
 ## [1.1.0] — 2026-05-01
 
 ### Added
