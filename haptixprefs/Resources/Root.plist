@@ -37,8 +37,6 @@
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Haptic Profile</string>
-            <key>footerText</key>
-            <string>Controls the Taptic Engine.</string>
         </dict>
         <dict>
             <key>cell</key>
