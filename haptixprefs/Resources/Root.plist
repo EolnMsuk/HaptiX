@@ -531,8 +531,6 @@
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Advanced Settings</string>
-            <key>footerText</key>
-            <string>Override the global Feedback.</string>
         </dict>
         <dict>
             <key>cell</key>
@@ -541,18 +539,6 @@
             <string>HaptixAdvancedListController</string>
             <key>label</key>
             <string>Per-Trigger Haptic Style</string>
-        </dict>
-
-        <!-- ═══════════════════════════════════ -->
-        <!-- Exceptions                          -->
-        <!-- ═══════════════════════════════════ -->
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>label</key>
-            <string>Exceptions</string>
-            <key>footerText</key>
-            <string>Select where HaptiX will be disabled.</string>
         </dict>
         <dict>
             <key>cell</key>
