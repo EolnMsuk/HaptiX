@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <mach-o/dyld.h>
 #import "HaptixPrefsRootListController.h"
 
 @interface HaptixPrefsRootListController ()
@@ -8,12 +9,30 @@
 
 static NSString *HXDetectJailbreakEnvironment(void) {
     NSString *bundlePath = [[NSBundle bundleForClass:NSClassFromString(@"HaptixPrefsRootListController")] bundlePath];
+
+    // Pure rootless (Dopamine 2, palera1n rootless): bundle installed under /var/jb
     if ([bundlePath hasPrefix:@"/var/jb"]) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
-            return @"RootHide";
-        }
         return @"Rootless";
     }
+
+    // RootHide Patcher converts the rootless package to rootful-style install paths,
+    // so the bundle appears at /Library/... rather than /var/jb/Library/...
+    // The physical marker file at /var/jb/.installed_roothide is placed by RootHide
+    // during jailbreak setup and is accessible even under the path-remapping layer.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
+        return @"RootHide";
+    }
+
+    // Fallback: RootHide injects its remapping library into every process.
+    // If NSFileManager cannot see /var/jb (e.g. future RootHide versions tighten
+    // namespace visibility), the loaded-dylib scan still reliably identifies it.
+    for (uint32_t i = 0; i < _dyld_image_count(); i++) {
+        const char *name = _dyld_get_image_name(i);
+        if (name && strstr(name, "roothide")) {
+            return @"RootHide";
+        }
+    }
+
     return @"Rootful";
 }
 
@@ -58,6 +77,16 @@ static NSString *HXDetectJailbreakEnvironment(void) {
     NSString *path = [bundle pathForResource:(isDark ? @"banner" : @"banner2") ofType:@"png"];
     UIImage *image = path ? [UIImage imageWithContentsOfFile:path] : nil;
     if (image) _bannerImageView.image = image;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [super tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
+    NSString *text = cell.textLabel.text;
+    if ([text isEqualToString:@"Reset Settings to Default"]) {
+        cell.textLabel.textColor = [UIColor systemRedColor];
+    } else if ([text isEqualToString:@"💸 Donate"]) {
+        cell.textLabel.textColor = [UIColor systemGreenColor];
+    }
 }
 
 - (UIView *)buildFooterView {
@@ -117,29 +146,77 @@ static NSString *HXDetectJailbreakEnvironment(void) {
         // Write explicit defaults for every known key. A deletion alone does not trigger
         // cfprefsd's per-process cache invalidation in long-running remote processes
         // (e.g. SpringBoard); an explicit write always does.
-        CFPreferencesSetAppValue(CFSTR("enabled"),         kCFBooleanFalse,            domain);
-        CFPreferencesSetAppValue(CFSTR("hookKeyboard"),    kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookButtons"),     kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookSwitches"),    kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookCells"),       kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookScrolling"),   kCFBooleanFalse,            domain);
-        CFPreferencesSetAppValue(CFSTR("hookVolume"),      kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookPower"),       kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookIcons"),       kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookLockScreen"),  kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hookAppSwitcher"), kCFBooleanTrue,             domain);
-        CFPreferencesSetAppValue(CFSTR("hapticStyle"),     (__bridge CFNumberRef)@(0), domain);
+        // Global
+        CFPreferencesSetAppValue(CFSTR("enabled"),          kCFBooleanFalse,            domain);
+        CFPreferencesSetAppValue(CFSTR("hapticStyle"),      (__bridge CFNumberRef)@(0), domain);
 
-        CFPreferencesSetAppValue(CFSTR("style_hookKeyboard"),    (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookButtons"),     (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookSwitches"),    (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookCells"),       (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookScrolling"),   (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookVolume"),      (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookPower"),       (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookLockScreen"),  (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookIcons"),       (__bridge CFNumberRef)@(0), domain);
-        CFPreferencesSetAppValue(CFSTR("style_hookAppSwitcher"), (__bridge CFNumberRef)@(0), domain);
+        // UIKit triggers
+        CFPreferencesSetAppValue(CFSTR("hookKeyboard"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookButtons"),      kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookSwitches"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookCells"),        kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookScrolling"),    kCFBooleanFalse, domain);
+        CFPreferencesSetAppValue(CFSTR("hookCallout"),      kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookAlerts"),       kCFBooleanFalse, domain);
+
+        // Hardware & System triggers
+        CFPreferencesSetAppValue(CFSTR("hookVolume"),       kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookPower"),        kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookLockScreen"),   kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookIcons"),        kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookAppSwitcher"),  kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookScreenshot"),   kCFBooleanFalse, domain);
+        CFPreferencesSetAppValue(CFSTR("hookDisplayWake"),  kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookCharger"),      kCFBooleanFalse, domain);
+        CFPreferencesSetAppValue(CFSTR("hookRinger"),       kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookReachability"), kCFBooleanTrue,  domain);
+
+        // System UI triggers
+        CFPreferencesSetAppValue(CFSTR("hookFolders"),       kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookSpotlight"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookSiri"),          kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookControlCenter"), kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookCCToggles"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookPowerDown"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookBiometric"),     kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookHomeBar"),       kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookPasscode"),      kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookAppKill"),       kCFBooleanFalse, domain);
+        CFPreferencesSetAppValue(CFSTR("hookCallStatus"),    kCFBooleanTrue,  domain);
+        CFPreferencesSetAppValue(CFSTR("hookLockSound"),     kCFBooleanFalse, domain);
+        CFPreferencesSetAppValue(CFSTR("hookRespring"),      kCFBooleanFalse, domain);
+
+        // Per-trigger style overrides (0 = Use Global)
+        CFPreferencesSetAppValue(CFSTR("style_hookKeyboard"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookButtons"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookSwitches"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCells"),        (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookScrolling"),    (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCallout"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookAlerts"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookVolume"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookPower"),        (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookLockScreen"),   (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookIcons"),        (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookAppSwitcher"),  (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookScreenshot"),   (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookDisplayWake"),  (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCharger"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookRinger"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookReachability"), (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookFolders"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookSpotlight"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookSiri"),          (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookControlCenter"), (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCCToggles"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookPowerDown"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookBiometric"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookHomeBar"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookPasscode"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookAppKill"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCallStatus"),    (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookLockSound"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookRespring"),      (__bridge CFNumberRef)@(0), domain);
 
         CFPreferencesAppSynchronize(domain);
 

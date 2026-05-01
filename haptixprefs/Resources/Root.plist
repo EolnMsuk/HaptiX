@@ -4,6 +4,10 @@
 <dict>
     <key>items</key>
     <array>
+
+        <!-- ═══════════════════════════════════ -->
+        <!-- Global Settings                     -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -25,6 +29,9 @@
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Haptic Profile                      -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -66,6 +73,9 @@
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Hardware &amp; System               -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -142,7 +152,272 @@
             <key>PostNotification</key>
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookDisplayWake</string>
+            <key>label</key>
+            <string>Display Wake</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookRinger</string>
+            <key>label</key>
+            <string>Ringer Toggle</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookReachability</string>
+            <key>label</key>
+            <string>Reachability</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookScreenshot</string>
+            <key>label</key>
+            <string>Screenshot</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookCharger</string>
+            <key>label</key>
+            <string>Charger Connect/Disconnect</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- System UI                           -->
+        <!-- ═══════════════════════════════════ -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>System UI</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookControlCenter</string>
+            <key>label</key>
+            <string>Control Center</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookCCToggles</string>
+            <key>label</key>
+            <string>CC Toggles &amp; Modules</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookFolders</string>
+            <key>label</key>
+            <string>Folder Open/Close</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookSpotlight</string>
+            <key>label</key>
+            <string>Spotlight Search</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookSiri</string>
+            <key>label</key>
+            <string>Siri Activation</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookPowerDown</string>
+            <key>label</key>
+            <string>Power Down Slider</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookBiometric</string>
+            <key>label</key>
+            <string>Biometric Unlock</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookHomeBar</string>
+            <key>label</key>
+            <string>Home Bar Gesture</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookPasscode</string>
+            <key>label</key>
+            <string>Passcode Key Press</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookCallStatus</string>
+            <key>label</key>
+            <string>Call Status Change</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookAppKill</string>
+            <key>label</key>
+            <string>App Termination</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookLockSound</string>
+            <key>label</key>
+            <string>Lock Sound</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookRespring</string>
+            <key>label</key>
+            <string>Respring</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+
+        <!-- ═══════════════════════════════════ -->
+        <!-- App Interfaces (UIKit)              -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -219,284 +494,60 @@
             <key>PostNotification</key>
             <string>com.eolnmsuk.haptix/ReloadPrefs</string>
         </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookCallout</string>
+            <key>label</key>
+            <string>Text Selection Callout</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.eolnmsuk.haptix</string>
+            <key>key</key>
+            <string>hookAlerts</string>
+            <key>label</key>
+            <string>System Alerts</string>
+            <key>PostNotification</key>
+            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+        </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Advanced Settings (sub-page)        -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Advanced Settings</string>
             <key>footerText</key>
-            <string>Override the global Feedback Style per trigger. "Use Global" defers to the Haptic Profile selection above.</string>
+            <string>Override the global Feedback Style per trigger. "Use Global" defers to the Haptic Profile above.</string>
         </dict>
         <dict>
             <key>cell</key>
-            <string>PSLinkListCell</string>
+            <string>PSLinkCell</string>
             <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookKeyboard</string>
+            <string>PSChildPaneController</string>
+            <key>file</key>
+            <string>Advanced</string>
             <key>label</key>
-            <string>Keyboard Presses &amp; Deletes</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer>
-                <integer>1</integer>
-                <integer>2</integer>
-                <integer>3</integer>
-                <integer>4</integer>
-                <integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string>
-                <string>Light</string>
-                <string>Medium</string>
-                <string>Heavy</string>
-                <string>Soft</string>
-                <string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookButtons</string>
-            <key>label</key>
-            <string>Standard Buttons</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookSwitches</string>
-            <key>label</key>
-            <string>UI Toggles &amp; Switches</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookCells</string>
-            <key>label</key>
-            <string>Table/List Cells</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookScrolling</string>
-            <key>label</key>
-            <string>Scroll Collision Edge</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookVolume</string>
-            <key>label</key>
-            <string>Volume Buttons</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookPower</string>
-            <key>label</key>
-            <string>Power Button</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookLockScreen</string>
-            <key>label</key>
-            <string>Lock/Unlock Events</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookIcons</string>
-            <key>label</key>
-            <string>Homescreen Icons</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSLinkListCell</string>
-            <key>detail</key>
-            <string>PSListItemsController</string>
-            <key>defaults</key>
-            <string>com.eolnmsuk.haptix</string>
-            <key>key</key>
-            <string>style_hookAppSwitcher</string>
-            <key>label</key>
-            <string>App Switcher &amp; Gestures</string>
-            <key>default</key>
-            <integer>0</integer>
-            <key>validValues</key>
-            <array>
-                <integer>0</integer><integer>1</integer><integer>2</integer>
-                <integer>3</integer><integer>4</integer><integer>5</integer>
-            </array>
-            <key>validTitles</key>
-            <array>
-                <string>Use Global</string><string>Light</string><string>Medium</string>
-                <string>Heavy</string><string>Soft</string><string>Rigid</string>
-            </array>
-            <key>PostNotification</key>
-            <string>com.eolnmsuk.haptix/ReloadPrefs</string>
+            <string>Per-Trigger Haptic Style</string>
         </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Exceptions                          -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -531,6 +582,9 @@
             <true/>
         </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Info                                -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -554,6 +608,9 @@
             <string>openDonate</string>
         </dict>
 
+        <!-- ═══════════════════════════════════ -->
+        <!-- Maintenance                         -->
+        <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
@@ -570,6 +627,7 @@
             <key>alignment</key>
             <integer>2</integer>
         </dict>
+
     </array>
     <key>title</key>
     <string>HaptiX</string>
