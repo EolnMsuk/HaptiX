@@ -61,7 +61,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.2.0"
+          "text": "1.2.1"
         },
         {
           "class": "DepictionTableTextView",
