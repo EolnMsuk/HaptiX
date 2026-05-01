@@ -28,7 +28,7 @@ Three `.deb` packages are produced by the CI pipeline and published to each GitH
 
 The rootless and rootful packages are built against `vendor/AltList.framework` (new, arm64 + arm64e). The legacy package is built via `Makefile.legacy`, which sets `ARCHS = arm64` (iOS 13–14 targets — A8–A11 — do not require arm64e) and exports `ALTLIST_FRAMEWORK_SEARCH_PATH = ../vendor/legacy` so the prefs subproject links against a prepared copy of `vendor/AltList_Old.framework`. Before the legacy build runs, CI strips the arm64e slice from that copy via `lipo -remove arm64e`: the original `AltList_Old.framework` binary labels its third slice as `arm64e` in the fat header but the slice data uses the old ABI (`arm64e.old`), which Xcode 15/16 linkers reject even during an arm64-only link. Stripping the slice leaves only the valid armv7 and arm64 slices and resolves the error without modifying the source framework.
 
-The preferences controller (`HaptixPrefsRootListController.m`) resolves the correct path at runtime by checking for the existence of `/var/jb`, so no recompilation is needed when switching between environments.
+Preferences are read and written through `cfprefsd` via `CFPreferencesCopyAppValue` / `CFPreferencesSetAppValue`, which resolves the correct backing plist path for the active jailbreak layout automatically — no path detection or recompilation is needed when switching between environments. The `HXDetectJailbreakEnvironment()` function in the prefs bundle checks the bundle path prefix and `/var/jb/.installed_roothide` solely to produce the display string shown in the settings footer; it has no effect on prefs storage.
 
 ### Architecture
 

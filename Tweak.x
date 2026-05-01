@@ -22,6 +22,18 @@ static NSTimeInterval lastHapticTime = 0;
 static BOOL isBlacklisted = NO;
 static NSInteger hapticStyle = 0; // 0=Light 1=Medium 2=Heavy 3=Soft 4=Rigid
 
+// Per-trigger style overrides; 0 = use global hapticStyle
+static NSInteger style_hookKeyboard    = 0;
+static NSInteger style_hookButtons     = 0;
+static NSInteger style_hookSwitches    = 0;
+static NSInteger style_hookCells       = 0;
+static NSInteger style_hookScrolling   = 0;
+static NSInteger style_hookVolume      = 0;
+static NSInteger style_hookPower       = 0;
+static NSInteger style_hookLockScreen  = 0;
+static NSInteger style_hookIcons       = 0;
+static NSInteger style_hookAppSwitcher = 0;
+
 // Helper function to safely read prefs via cfprefsd (Bypasses ALL sandboxes, including Native Apple Apps)
 static NSInteger readIntegerPref(NSString *key, NSInteger fallback) {
     CFPropertyListRef value = CFPreferencesCopyAppValue((__bridge CFStringRef)key, CFSTR("com.eolnmsuk.haptix"));
@@ -62,6 +74,17 @@ static void loadPrefs() {
     
     hapticStyle = readIntegerPref(@"hapticStyle", 0);
 
+    style_hookKeyboard    = readIntegerPref(@"style_hookKeyboard",    0);
+    style_hookButtons     = readIntegerPref(@"style_hookButtons",     0);
+    style_hookSwitches    = readIntegerPref(@"style_hookSwitches",    0);
+    style_hookCells       = readIntegerPref(@"style_hookCells",       0);
+    style_hookScrolling   = readIntegerPref(@"style_hookScrolling",   0);
+    style_hookVolume      = readIntegerPref(@"style_hookVolume",      0);
+    style_hookPower       = readIntegerPref(@"style_hookPower",       0);
+    style_hookLockScreen  = readIntegerPref(@"style_hookLockScreen",  0);
+    style_hookIcons       = readIntegerPref(@"style_hookIcons",       0);
+    style_hookAppSwitcher = readIntegerPref(@"style_hookAppSwitcher", 0);
+
     // AltList storage model: top-level booleans keyed by bundle ID (not nested under "blacklistedApps").
     // The PSLinkListCell `key` field is a specifier identifier only; AltList writes each app directly
     // into the preferences domain, so readBoolPref(bundleID) is the correct lookup.
@@ -72,7 +95,7 @@ static void loadPrefs() {
 }
 
 // --- Haptic Engine (UIImpactFeedbackGenerator) ---
-static void triggerHaptic() {
+static void triggerHapticWithOverride(NSInteger overrideStyle) {
     if (!enabled || isBlacklisted) return;
 
     // 50ms cooldown eliminates the "tick tick" double-fire glitch
@@ -80,9 +103,12 @@ static void triggerHaptic() {
     if (currentTime - lastHapticTime < 0.05) return;
     lastHapticTime = currentTime;
 
+    // 0 = use global; 1–5 = per-trigger override (shifted by 1 to match UIImpactFeedbackStyle)
+    NSInteger effectiveStyle = (overrideStyle > 0) ? (overrideStyle - 1) : hapticStyle;
+
     dispatch_async(dispatch_get_main_queue(), ^{
         UIImpactFeedbackStyle style;
-        switch (hapticStyle) {
+        switch (effectiveStyle) {
             case 1:  style = UIImpactFeedbackStyleMedium; break;
             case 2:  style = UIImpactFeedbackStyleHeavy;  break;
             case 3:  style = UIImpactFeedbackStyleSoft;   break;
@@ -103,11 +129,11 @@ static void triggerHaptic() {
 %hook UIKeyboardImpl
 - (void)playKeyClickSound {
     %orig;
-    if (hookKeyboard) triggerHaptic();
+    if (hookKeyboard) triggerHapticWithOverride(style_hookKeyboard);
 }
 - (void)autoDelete {
     %orig;
-    if (hookKeyboard) triggerHaptic();
+    if (hookKeyboard) triggerHapticWithOverride(style_hookKeyboard);
 }
 %end
 
@@ -118,7 +144,7 @@ static void triggerHaptic() {
         UITouch *touch = [[event allTouches] anyObject];
         // Only trigger if it's a "Touch Up" event or a programmatic trigger, preventing double ticks
         if (!touch || touch.phase == UITouchPhaseEnded) {
-            triggerHaptic();
+            triggerHapticWithOverride(style_hookButtons);
         }
     }
 }
@@ -127,14 +153,14 @@ static void triggerHaptic() {
 %hook UISwitch
 - (void)setOn:(BOOL)on animated:(BOOL)animated {
     %orig;
-    if (hookSwitches) triggerHaptic();
+    if (hookSwitches) triggerHapticWithOverride(style_hookSwitches);
 }
 %end
 
 %hook UITableViewCell
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     %orig;
-    if (hookCells && selected) triggerHaptic();
+    if (hookCells && selected) triggerHapticWithOverride(style_hookCells);
 }
 %end
 
@@ -148,7 +174,7 @@ static void triggerHaptic() {
         BOOL isOutOfBoundsY = (arg1.y <= topBound || arg1.y >= bottomBound);
         
         if (wasInBoundsY && isOutOfBoundsY) {
-            triggerHaptic();
+            triggerHapticWithOverride(style_hookScrolling);
         }
     }
     %orig;
@@ -163,33 +189,33 @@ static void triggerHaptic() {
 %group SpringBoardHooks
 
 %hook SBVolumeControl
-- (void)increaseVolume { %orig; if (hookVolume) triggerHaptic(); }
-- (void)decreaseVolume { %orig; if (hookVolume) triggerHaptic(); }
+- (void)increaseVolume { %orig; if (hookVolume) triggerHapticWithOverride(style_hookVolume); }
+- (void)decreaseVolume { %orig; if (hookVolume) triggerHapticWithOverride(style_hookVolume); }
 %end
 
 %hook SBLockHardwareButton
-- (void)singlePress { %orig; if (hookPower) triggerHaptic(); }
+- (void)singlePress { %orig; if (hookPower) triggerHapticWithOverride(style_hookPower); }
 %end
 
 %hook SBLockScreenManager
-- (void)lockUIFromSource:(int)arg1 withOptions:(id)arg2 { %orig; if (hookLockScreen) triggerHaptic(); }
+- (void)lockUIFromSource:(int)arg1 withOptions:(id)arg2 { %orig; if (hookLockScreen) triggerHapticWithOverride(style_hookLockScreen); }
 %end
 
 %hook SBIconView
-- (void)setHighlighted:(BOOL)highlighted { %orig; if (hookIcons && highlighted) triggerHaptic(); }
+- (void)setHighlighted:(BOOL)highlighted { %orig; if (hookIcons && highlighted) triggerHapticWithOverride(style_hookIcons); }
 %end
 
 %hook SBHomeGesturePanGestureRecognizer
 - (void)setState:(long long)state {
     %orig;
-    if (state == 1 && hookAppSwitcher) triggerHaptic();
+    if (state == 1 && hookAppSwitcher) triggerHapticWithOverride(style_hookAppSwitcher);
 }
 %end
 
 %hook SBFluidSwitcherViewController
 - (void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
     %orig;
-    if (hookAppSwitcher) triggerHaptic();
+    if (hookAppSwitcher) triggerHapticWithOverride(style_hookAppSwitcher);
 }
 %end
 

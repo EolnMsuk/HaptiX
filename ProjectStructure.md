@@ -11,7 +11,7 @@ Two Logos `%group` blocks partition the hooks:
 - **UIKitHooks** — installed unconditionally in every injected process. Hooks `UIKeyboardImpl`, `UIControl`, `UISwitch`, `UITableViewCell`, and `UIScrollView`.
 - **SpringBoardHooks** — installed only when `bundleIdentifier == com.apple.springboard`. Hooks `SBVolumeControl`, `SBLockHardwareButton`, `SBLockScreenManager`, `SBIconView`, `SBHomeGesturePanGestureRecognizer`, and `SBFluidSwitcherViewController`.
 
-Haptic feedback is delivered via `UIImpactFeedbackGenerator` on the main queue. A 50ms time-gate (`lastHapticTime`) prevents the Taptic Engine from double-firing when rapid sequential UI events occur.
+Haptic feedback is delivered via `UIImpactFeedbackGenerator` on the main queue through `triggerHapticWithOverride(NSInteger overrideStyle)`. Each hook passes its corresponding `style_hook*` static variable; when that value is `0` the global `hapticStyle` setting is used, otherwise the per-trigger value (1–5 → Light/Medium/Heavy/Soft/Rigid, shifted by 1 to align with zero-indexed `UIImpactFeedbackStyle`) takes precedence. A 50ms time-gate (`lastHapticTime`) prevents the Taptic Engine from double-firing when rapid sequential UI events occur.
 
 The preferences bundle (`haptixprefs`) is a separate compiled target installed to `/Library/PreferenceBundles/haptixprefs.bundle`. PreferenceLoader discovers it via the `entry.plist` copied to `/Library/PreferenceLoader/Preferences/HaptiX.plist` by the root `Makefile`'s `internal-stage::` hook.
 
@@ -50,8 +50,10 @@ HaptiX/
 │
 ├── Tweak.x                          # All hook logic, prefs loading, haptic engine
 │   ├── readBoolPref() / readIntegerPref()  # Sandbox-bypassing CFPreferences readers
-│   ├── loadPrefs()                  # Reads all pref keys; sets isBlacklisted
-│   ├── triggerHaptic()              # UIImpactFeedbackGenerator dispatch; 50ms gate
+│   ├── loadPrefs()                  # Reads all pref keys + 10 style_hook* overrides;
+│   │                                # sets isBlacklisted
+│   ├── triggerHapticWithOverride()  # UIImpactFeedbackGenerator dispatch; 50ms gate;
+│   │                                # per-trigger style override (0 = use global)
 │   ├── %group UIKitHooks            # UIKit process hooks (all injected apps)
 │   └── %group SpringBoardHooks      # SpringBoard-only hardware hooks
 │
@@ -83,7 +85,6 @@ HaptiX/
 ├── COMPATIBILITY.md                 # Device/jailbreak matrix, conflict guide
 ├── ProjectStructure.md              # This file
 ├── README.md                        # User-facing documentation
-├── CLAUDE.md                        # Claude Code project instructions
 │
 ├── haptixprefs/                     # PreferenceBundle target
 │   ├── Makefile                     # BUNDLE_NAME=haptixprefs;
@@ -98,13 +99,19 @@ HaptiX/
 │   ├── HaptixPrefsRootListController.h
 │   ├── HaptixPrefsRootListController.m  # resetSettings() — clears prefs via
 │   │                                    # CFPreferences API; posts ReloadPrefs notify;
-│   │                                    # viewDidLoad installs adaptive banner header;
-│   │                                    # traitCollectionDidChange: swaps banner live
+│   │                                    # viewDidLoad installs banner header + footer;
+│   │                                    # traitCollectionDidChange: swaps banner live;
+│   │                                    # buildFooterView — version/env label footer;
+│   │                                    # openGitHub / openDonate — Info section actions;
+│   │                                    # HXDetectJailbreakEnvironment() — passive env
+│   │                                    # detection (bundle path + RootHide marker)
 │   └── Resources/
 │       ├── Info.plist               # Bundle metadata for the PreferenceBundle
 │       ├── Root.plist               # Declarative Settings UI (PSSpecifiers):
 │       │                            # enabled, hapticStyle (5 profiles), 10 hook
-│       │                            # toggles, AltList exclusion list, Reset button
+│       │                            # toggles, Advanced Settings (10 per-trigger
+│       │                            # PSLinkListCell overrides), AltList exclusion
+│       │                            # list, Info (GitHub/Donate), Reset button
 │       ├── icon.png                 # Settings app icon — 29×29 (@1x)
 │       ├── icon@2x.png              # Settings app icon — 58×58 (@2x)
 │       ├── icon@3x.png              # Settings app icon — 87×87 (@3x)
