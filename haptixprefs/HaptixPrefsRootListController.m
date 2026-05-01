@@ -155,7 +155,7 @@ static NSString *HXDetectJailbreakEnvironment(void) {
         // (e.g. SpringBoard); an explicit write always does.
         // Global
         CFPreferencesSetAppValue(CFSTR("enabled"),          kCFBooleanFalse,            domain);
-        CFPreferencesSetAppValue(CFSTR("hapticStyle"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("hapticStyle"),      (__bridge CFNumberRef)@(4), domain);
 
         // UIKit triggers
         CFPreferencesSetAppValue(CFSTR("hookKeyboard"),     kCFBooleanTrue,  domain);
