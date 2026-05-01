@@ -25,7 +25,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "HaptiX brings native Taptic Engine feedback to every corner of iOS — hardware buttons, keyboard, UI controls, navigation gestures, Control Center, Siri, folders, biometric unlock, passcode, call events, and more.\n\nChoose a global feedback intensity (Light, Medium, Heavy, Soft, or Rigid), or open **Advanced Settings** to override the haptic style per-trigger independently across all 30 triggers. Enable or disable triggers individually, exclude specific apps via AltList, and let all settings apply live — no respring required.\n\nCompatible with iOS 13–17 across rootless (Dopamine, RootHide, palera1n), rootful (palera1n), and legacy (checkra1n, unc0ver) jailbreaks.",
+          "markdown": "HaptiX brings native Taptic Engine feedback to every corner of iOS — hardware buttons, keyboard, UI controls, navigation gestures, Control Center, Siri, folders, biometric unlock, passcode, call events, and more.\n\nChoose a global feedback intensity (Light, Medium, Heavy, Soft, or Rigid), or open **Advanced Settings** to override the haptic style per-trigger independently across all 30 triggers. Enable or disable triggers individually, exclude specific apps via AltList, and let all settings apply live — no respring required.\n\nCompatible with iOS 13–17 across rootless (Dopamine, roothide, palera1n), rootful (palera1n), and legacy (checkra1n, unc0ver) jailbreaks.",
           "useRawFormat": false
         },
         {
