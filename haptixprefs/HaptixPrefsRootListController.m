@@ -6,6 +6,17 @@
 @property (nonatomic, strong) UIImageView *bannerImageView;
 @end
 
+static NSString *HXDetectJailbreakEnvironment(void) {
+    NSString *bundlePath = [[NSBundle bundleForClass:NSClassFromString(@"HaptixPrefsRootListController")] bundlePath];
+    if ([bundlePath hasPrefix:@"/var/jb"]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
+            return @"RootHide";
+        }
+        return @"Rootless";
+    }
+    return @"Rootful";
+}
+
 @implementation HaptixPrefsRootListController
 
 - (NSArray *)specifiers {
@@ -34,6 +45,7 @@
     _bannerImageView.contentMode = UIViewContentModeScaleAspectFit;
     _bannerImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.table.tableHeaderView = _bannerImageView;
+    self.table.tableFooterView = [self buildFooterView];
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -46,6 +58,43 @@
     NSString *path = [bundle pathForResource:(isDark ? @"banner" : @"banner2") ofType:@"png"];
     UIImage *image = path ? [UIImage imageWithContentsOfFile:path] : nil;
     if (image) _bannerImageView.image = image;
+}
+
+- (UIView *)buildFooterView {
+    NSString *version = [[NSBundle bundleForClass:[self class]]
+                          objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"?";
+    NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
+    NSString *env = HXDetectJailbreakEnvironment();
+
+    NSString *text = [NSString stringWithFormat:@"HaptiX v%@ (iOS %@ %@)", version, iosVersion, env];
+
+    UILabel *label = [[UILabel alloc] init];
+    label.text = text;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:12.0 weight:UIFontWeightRegular];
+    label.textColor = [UIColor secondaryLabelColor];
+    label.numberOfLines = 1;
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    [container addSubview:label];
+    [NSLayoutConstraint activateConstraints:@[
+        [label.centerXAnchor constraintEqualToAnchor:container.centerXAnchor],
+        [label.centerYAnchor constraintEqualToAnchor:container.centerYAnchor],
+        [label.leadingAnchor constraintGreaterThanOrEqualToAnchor:container.leadingAnchor constant:16],
+        [label.trailingAnchor constraintLessThanOrEqualToAnchor:container.trailingAnchor constant:-16],
+    ]];
+    return container;
+}
+
+- (void)openGitHub {
+    NSURL *url = [NSURL URLWithString:@"https://github.com/EolnMsuk/HaptiX"];
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+}
+
+- (void)openDonate {
+    NSURL *url = [NSURL URLWithString:@"https://venmo.com/user/EolnMsuk"];
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
 
 - (void)resetSettings {
@@ -80,6 +129,17 @@
         CFPreferencesSetAppValue(CFSTR("hookLockScreen"),  kCFBooleanTrue,             domain);
         CFPreferencesSetAppValue(CFSTR("hookAppSwitcher"), kCFBooleanTrue,             domain);
         CFPreferencesSetAppValue(CFSTR("hapticStyle"),     (__bridge CFNumberRef)@(0), domain);
+
+        CFPreferencesSetAppValue(CFSTR("style_hookKeyboard"),    (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookButtons"),     (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookSwitches"),    (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookCells"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookScrolling"),   (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookVolume"),      (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookPower"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookLockScreen"),  (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookIcons"),       (__bridge CFNumberRef)@(0), domain);
+        CFPreferencesSetAppValue(CFSTR("style_hookAppSwitcher"), (__bridge CFNumberRef)@(0), domain);
 
         CFPreferencesAppSynchronize(domain);
 
