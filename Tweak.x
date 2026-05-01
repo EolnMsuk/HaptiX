@@ -42,7 +42,7 @@ static BOOL hookRespring      = NO;
 // State management
 static NSTimeInterval lastHapticTime = 0;
 static BOOL isBlacklisted = NO;
-static NSInteger hapticStyle = 0; // 0=Light 1=Medium 2=Heavy 3=Soft 4=Rigid
+static NSInteger hapticStyle = 4; // 0=Light 1=Medium 2=Heavy 3=Soft 4=Rigid
 
 // Per-trigger style overrides; 0 = use global hapticStyle
 // UIKit
