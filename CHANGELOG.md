@@ -16,7 +16,6 @@ All notable changes to HaptiX are documented here.
 - **`build_all.sh`**: New local build script mirroring the CI exactly. Handles the AltList vendor swap and restore, builds all three packages with the same SDK paths and CLI args as CI, and outputs named `.deb` files to `output/`.
 
 ### Documentation
-- `CLAUDE.md`: Updated Build Commands (rootful is now the `make package` default; legacy prep uses in-place swap + `lipo -thin arm64`; added `build_all.sh`); updated Key Files entries for `Makefile`, `Makefile.legacy`, `haptixprefs/Makefile`, `haptixprefs/Makefile.legacy`, and `vendor/AltList_Old.framework`; added `build_all.sh` entry; corrected Preferences Path section to reflect CFPreferences-based `resetSettings` (no `/var/jb` file path detection).
 - `ProjectStructure.md`: Rewrote Build System section (parallel CI jobs, in-place swap, `lipo -thin arm64`, no path variable); updated file tree comments for `Makefile`, `Makefile.legacy`, `haptixprefs/Makefile`, `vendor/AltList.framework`, `vendor/AltList_Old.framework`, `vendor/AltList_New.framework`, and `build.yml`; added `build_all.sh` to file tree.
 
 ---
@@ -28,7 +27,6 @@ All notable changes to HaptiX are documented here.
 
 ### Documentation
 - `COMPATIBILITY.md`: Package variants table updated to the new full Debian filenames; added `ARCHS` column; prose expanded to document the `ARCHS = arm64` export in `Makefile.legacy` and the `lipo -remove arm64e` CI step with root-cause explanation. Jailbreak support table updated from old suffix notation to `…_iphoneos-arm64/arm/arm_legacy.deb` shorthand.
-- `CLAUDE.md`: Updated `Makefile.legacy` key-file entry to list all three exports (`THEOS_PACKAGE_SCHEME`, `ALTLIST_FRAMEWORK_SEARCH_PATH`, `ARCHS`); updated `vendor/AltList_Old.framework` entry to document the arm64e.old ABI mismatch and lipo strip; updated local legacy-prep instructions to include the `lipo -remove arm64e` step; added CI output table showing the three produced artifact filenames.
 
 ---
 
