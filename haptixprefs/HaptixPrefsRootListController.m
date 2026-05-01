@@ -80,7 +80,6 @@ static NSString *HXDetectJailbreakEnvironment(void) {
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [super tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
     NSString *text = cell.textLabel.text;
     if ([text isEqualToString:@"Reset Settings to Default"]) {
         cell.textLabel.textColor = [UIColor systemRedColor];
