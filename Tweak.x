@@ -140,7 +140,7 @@ static void loadPrefs() {
     hookLockSound     = readBoolPref(@"hookLockSound",     NO);
     hookRespring      = readBoolPref(@"hookRespring",      NO);
 
-    hapticStyle = readIntegerPref(@"hapticStyle", 0);
+    hapticStyle = readIntegerPref(@"hapticStyle", 4);
 
     // Per-trigger style overrides — UIKit
     style_hookKeyboard  = readIntegerPref(@"style_hookKeyboard",  0);
