@@ -44,11 +44,6 @@
 
 HaptiX uses `UIImpactFeedbackGenerator`, which is gated at the OS level by Apple. **The tweak will produce zero haptic feedback if either of these settings is off — this cannot be overridden in software.**
 
-| Setting | Path | Required state |
-|---------|------|---------------|
-| System Haptics | Settings → Sounds & Haptics → System Haptics | **ON** |
-| Keyboard Feedback → Haptic | Settings → Sounds & Haptics → Keyboard Feedback → Haptic | **ON** *(only needed if the Keyboard hook is enabled)* |
-
 ---
 
 ## ⚙️ Configuration
