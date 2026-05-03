@@ -76,8 +76,6 @@ Open **Settings → HaptiX** to configure the tweak:
 
 **Haptics not firing after install:** Respring or restart the affected app. The tweak is injected at process launch.
 
-**Settings changes not taking effect:** The tweak hot-reloads via Darwin notification — no respring needed. If changes still don't apply, force-quit and relaunch the app.
-
 **Double haptic pulse on interactions:** Another installed tweak or a native iOS haptic setting (System Haptics / Keyboard Feedback) is firing alongside HaptiX. See [COMPATIBILITY.md](COMPATIBILITY.md) for the full conflict guide.
 
 ---
