@@ -65,20 +65,6 @@ Open **Settings → HaptiX** to configure the tweak:
 | Table/List Cells | `UITableViewCell` selection feedback |
 | Scroll Collision Edge | Scroll boundary feedback (off by default) |
 | Excluded Apps | Per-app exclusion list (AltList) |
-| **Advanced Settings** | |
-| Keyboard Presses & Deletes *(override)* | Per-trigger profile for keyboard hook |
-| Standard Buttons *(override)* | Per-trigger profile for button hook |
-| UI Toggles & Switches *(override)* | Per-trigger profile for switch hook |
-| Table/List Cells *(override)* | Per-trigger profile for cell hook |
-| Scroll Collision Edge *(override)* | Per-trigger profile for scroll hook |
-| Volume Buttons *(override)* | Per-trigger profile for volume hook |
-| Power Button *(override)* | Per-trigger profile for power hook |
-| Lock/Unlock Events *(override)* | Per-trigger profile for lock screen hook |
-| Homescreen Icons *(override)* | Per-trigger profile for icon hook |
-| App Switcher & Gestures *(override)* | Per-trigger profile for app switcher hook |
-| **Info** | |
-| 🛠️ GitHub | Opens the HaptiX GitHub repository |
-| 💸 Donate | Opens the Venmo donation page |
 
 ---
 
