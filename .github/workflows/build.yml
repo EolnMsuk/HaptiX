@@ -94,12 +94,8 @@ jobs:
 
       - name: Build Legacy Target (iOS 13–14)
         run: |
-          rm -rf vendor/AltList.framework
-          cp -R vendor/AltList_Old.framework vendor/AltList.framework
-          lipo -thin arm64 vendor/AltList.framework/AltList -output vendor/AltList.framework/AltList
-
           make clean
-          make package FINALPACKAGE=1 SYSROOT=$THEOS/sdks/iPhoneOS14.5.sdk TARGET="iphone:clang:14.5:13.0" ARCHS="arm64"
+          make package FINALPACKAGE=1 SYSROOT=$THEOS/sdks/iPhoneOS14.5.sdk TARGET="iphone:clang:14.5:13.0" ARCHS="arm64 arm64e"
           mv packages/*.deb output/com.eolnmsuk.haptix_${{ env.VERSION }}_iphoneos-arm_legacy.deb
 
       - name: Upload Legacy Artifacts
