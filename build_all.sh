@@ -26,20 +26,11 @@ rm -rf packages/*
 make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless SYSROOT="$SDK_16" TARGET="iphone:clang:16.5:15.0" ARCHS="arm64 arm64e"
 mv packages/*.deb "output/com.eolnmsuk.haptix_${VERSION}_iphoneos-arm64.deb"
 
-# ── Swap in old AltList (arm64-only strip) for legacy build ───────────────────
-rm -rf vendor/AltList.framework
-cp -R vendor/AltList_Old.framework vendor/AltList.framework
-lipo -thin arm64 vendor/AltList.framework/AltList -output vendor/AltList.framework/AltList
-
 # Legacy Rootful (iOS 13–14, Checkra1n / Unc0ver / Electra)
 make clean
 rm -rf packages/*
-make package FINALPACKAGE=1 SYSROOT="$SDK_14" TARGET="iphone:clang:14.5:13.0" ARCHS="arm64"
+make package FINALPACKAGE=1 SYSROOT="$SDK_14" TARGET="iphone:clang:14.5:13.0" ARCHS="arm64 arm64e"
 mv packages/*.deb "output/com.eolnmsuk.haptix_${VERSION}_iphoneos-arm_legacy.deb"
-
-# ── Restore new AltList ────────────────────────────────────────────────────────
-rm -rf vendor/AltList.framework
-cp -R vendor/AltList_New.framework vendor/AltList.framework
 
 echo ""
 echo "Done! Built:"
