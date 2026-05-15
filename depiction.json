@@ -41,7 +41,7 @@
         {
           "class": "DepictionTableButtonView",
           "title": "Donate via Venmo",
-          "action": "https://venmo.com/user/eolnmsuk",
+          "action": "https://venmo.com/user/RustOnRails",
           "openExternal": true
         },
         {
@@ -61,7 +61,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.2.5"
+          "text": "1.2.6"
         },
         {
           "class": "DepictionTableTextView",
