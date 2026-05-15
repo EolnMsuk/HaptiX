@@ -129,7 +129,7 @@ static NSString *HXDetectJailbreakEnvironment(void) {
 }
 
 - (void)openDonate {
-    NSURL *url = [NSURL URLWithString:@"https://venmo.com/user/EolnMsuk"];
+    NSURL *url = [NSURL URLWithString:@"https://venmo.com/user/RustOnRails"];
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
 
