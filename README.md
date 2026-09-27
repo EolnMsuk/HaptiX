@@ -80,8 +80,6 @@ Open **Settings → HaptiX** to configure the tweak:
 
 ---
 
-## Credits
+## Support Developer
 
-Author: [EolnMsuk](https://github.com/EolnMsuk)
-
-Donate: [BTC](https://www.blockchain.com/explorer/addresses/btc/bc1qm06lzkdfule3f7flf4u70xvjrp5n74lzxnnfks) | [Venmo](https://venmo.com/user/RustOnRails)
+[Venmo](https://venmo.com/u/rustonrails) | Bitcoin: `31uHLpioo1TbxAmo9kM7rrKcLz3wvcoZaL`
