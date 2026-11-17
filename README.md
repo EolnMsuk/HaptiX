@@ -31,7 +31,7 @@
 ## 📥 Installation
 
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
-2. Download the correct `.deb` for your environment (see table).
+2. Download the correct `.deb` for your environment (see table). 
 3. Install (patch first if roothide) it via **Sileo** or **Zebra** by opening the `.deb`.
 
 ---
