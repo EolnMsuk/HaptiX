@@ -68,6 +68,12 @@ for binary in "$extracted/$tweak" "$prefs"; do
     esac
 
     for arch in arm64 arm64e; do
+        expected_minimum_ios="$minimum_ios"
+        # The legacy toolchain emits an iOS 14.0 minimum for the arm64e slice.
+        if [[ "$variant" == legacy && "$arch" == arm64e && "$minimum_ios" == 13.0 ]]; then
+            expected_minimum_ios=14.0
+        fi
+
         libraries=$(xcrun otool -arch "$arch" -L "$binary")
         commands=$(xcrun otool -arch "$arch" -l "$binary")
         minos=$(awk '
@@ -82,8 +88,8 @@ for binary in "$extracted/$tweak" "$prefs"; do
         printf '%s (%s), minimum iOS %s\n' "$binary" "$arch" "$minos"
         printf '%s\n' "$libraries"
         printf 'Runpaths\n%s\n' "$runpaths"
-        [[ "$minos" == "$minimum_ios" || "$minos" == "$minimum_ios.0" ]] ||
-            fail "Expected iOS $minimum_ios as the deployment target for $binary ($arch)."
+        [[ "$minos" == "$expected_minimum_ios" || "$minos" == "$expected_minimum_ios.0" ]] ||
+            fail "Expected iOS $expected_minimum_ios for $binary ($arch). Found ${minos:-no deployment target}."
 
         if [[ "$variant" != rootless ]] &&
             grep -Eq '^[[:space:]]*/var/jb(/|$)' <<< "$libraries"$'\n'"$runpaths"; then
