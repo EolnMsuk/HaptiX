@@ -20,7 +20,7 @@ rm -rf packages/*
 make package FINALPACKAGE=1 SYSROOT="$SDK_16" TARGET="iphone:clang:16.5:15.0" ARCHS="arm64 arm64e"
 mv packages/*.deb "output/com.eolnmsuk.haptix_${VERSION}_iphoneos-arm.deb"
 
-# Modern Rootless (iOS 15+, Dopamine 2 / RootHide / palera1n rootless)
+# Modern Rootless (iOS 15+, Dopamine 2 / palera1n rootless)
 make clean
 rm -rf packages/*
 make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless SYSROOT="$SDK_16" TARGET="iphone:clang:16.5:15.0" ARCHS="arm64 arm64e"

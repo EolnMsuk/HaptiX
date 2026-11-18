@@ -20,9 +20,10 @@
 @end
 
 static NSString *HXDetectJailbreakEnvironment(void) {
-    // roothide must be checked first. Its patcher remaps /var/jb paths to rootful-style
-    // locations, so /var/jb may still be visible while the bundle is at /Library/...
-    // The marker file and injected dylib are the reliable identifiers.
+#if defined(HAPTIX_NATIVE_ROOTHIDE)
+    return @"RootHide";
+#else
+    // Check older RootHide installations before treating /var/jb as rootless.
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/.installed_roothide"]) {
         return @"roothide";
     }
@@ -42,6 +43,7 @@ static NSString *HXDetectJailbreakEnvironment(void) {
     }
 
     return @"Rootful";
+#endif
 }
 
 @implementation HaptixPrefsRootListController
