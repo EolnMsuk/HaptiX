@@ -1,7 +1,13 @@
 #import <Foundation/Foundation.h>
+#import <Preferences/PSSpecifier.h>
+#import <Preferences/PSTableCell.h>
 #import <UIKit/UIKit.h>
+#import <dispatch/dispatch.h>
 #import <mach-o/dyld.h>
+#import "HaptixDonationController.h"
 #import "HaptixPrefsRootListController.h"
+#import "HaptixSettingsPresentation.h"
+#import "HaptixUpdateChecker.h"
 
 @interface HaptixAdvancedListController : PSListController
 @end
@@ -17,6 +23,72 @@
 
 @interface HaptixPrefsRootListController ()
 @property (nonatomic, strong) UIImageView *bannerImageView;
+@property (nonatomic) BOOL updateCheckInProgress;
+@property (nonatomic) BOOL showUpdateResult;
+@end
+
+static NSBundle *HaptixPrefsBundle(void) {
+    return [NSBundle bundleForClass:HaptixPrefsRootListController.class];
+}
+
+static NSString *HaptixInstalledVersion(void) {
+    return [HaptixPrefsBundle() objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+}
+
+// The Other group uses code adapted from ChoySee. See Resources/ChoySee-LICENSE.txt.
+static NSString *const HaptixUpdatesSpecifierID = @"CheckUpdates";
+static NSString *const HaptixDonateSpecifierID = @"Donate";
+
+static UIImage *HaptixRenderRowIcon(CGSize imageSize, void (^draw)(CGRect)) {
+    CGSize canvasSize = CGSizeMake(29, 29);
+    CGRect bounds = CGRectMake((canvasSize.width - imageSize.width) / 2,
+                               (canvasSize.height - imageSize.height) / 2,
+                               imageSize.width, imageSize.height);
+    UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:canvasSize];
+    UIImage *image = [renderer imageWithActions:^(UIGraphicsImageRendererContext *context) {
+        draw(bounds);
+    }];
+    return [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
+
+static UIImage *HaptixUpdatesIcon(void) {
+    static UIImage *icon;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSAttributedString *emoji = [[NSAttributedString alloc] initWithString:@"🔄"
+            attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20]}];
+        icon = HaptixRenderRowIcon(emoji.size, ^(CGRect bounds) {
+            [emoji drawAtPoint:bounds.origin];
+        });
+    });
+    return icon;
+}
+
+static UIImage *HaptixDonateIcon(UITraitCollection *traits) {
+    UIImageSymbolConfiguration *configuration = [UIImageSymbolConfiguration configurationWithPointSize:22];
+    UIImage *coin = [UIImage systemImageNamed:@"dollarsign.circle.fill" withConfiguration:configuration];
+    if (coin) {
+        UIColor *orange = [UIColor.systemOrangeColor resolvedColorWithTraitCollection:traits];
+        UIImage *tintedCoin = [coin imageWithTintColor:orange renderingMode:UIImageRenderingModeAlwaysOriginal];
+        return HaptixRenderRowIcon(tintedCoin.size, ^(CGRect bounds) {
+            [tintedCoin drawInRect:bounds];
+        });
+    }
+
+    UIImage *fallback = [UIImage imageNamed:@"Donate" inBundle:HaptixPrefsBundle() compatibleWithTraitCollection:traits];
+    return [fallback imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
+
+@interface HaptixDonateTableCell : PSTableCell
+@end
+
+@implementation HaptixDonateTableCell
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    UIColor *green = UIColor.systemGreenColor;
+    self.textLabel.textColor = green;
+    self.textLabel.highlightedTextColor = green;
+}
 @end
 
 static NSString *HXDetectJailbreakEnvironment(void) {
@@ -50,7 +122,16 @@ static NSString *HXDetectJailbreakEnvironment(void) {
 
 - (NSArray *)specifiers {
     if (!_specifiers) {
-        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self bundle:HaptixPrefsBundle()];
+        for (PSSpecifier *specifier in _specifiers) {
+            if ([specifier.identifier isEqualToString:HaptixUpdatesSpecifierID]) {
+                [specifier setProperty:HaptixUpdatesIcon() forKey:@"iconImage"];
+                [specifier setProperty:@(!self.updateCheckInProgress) forKey:@"enabled"];
+            } else if ([specifier.identifier isEqualToString:HaptixDonateSpecifierID]) {
+                [specifier setProperty:HaptixDonateTableCell.class forKey:@"cellClass"];
+                [specifier setProperty:HaptixDonateIcon(self.traitCollection) forKey:@"iconImage"];
+            }
+        }
     }
     return _specifiers;
 }
@@ -58,7 +139,7 @@ static NSString *HXDetectJailbreakEnvironment(void) {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSBundle *bundle = HaptixPrefsBundle();
     BOOL isDark = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
     NSString *path = [bundle pathForResource:(isDark ? @"banner" : @"banner2") ofType:@"png"];
     UIImage *image = path ? [UIImage imageWithContentsOfFile:path] : nil;
@@ -79,10 +160,16 @@ static NSString *HXDetectJailbreakEnvironment(void) {
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
-    if (!_bannerImageView) return;
     if (![self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) return;
 
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    if (_specifiers) {
+        PSSpecifier *row = [self specifierForID:HaptixDonateSpecifierID];
+        [row setProperty:HaptixDonateIcon(self.traitCollection) forKey:@"iconImage"];
+        if (row && self.isViewLoaded) [self reloadSpecifier:row];
+    }
+
+    if (!_bannerImageView) return;
+    NSBundle *bundle = HaptixPrefsBundle();
     BOOL isDark = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
     NSString *path = [bundle pathForResource:(isDark ? @"banner" : @"banner2") ofType:@"png"];
     UIImage *image = path ? [UIImage imageWithContentsOfFile:path] : nil;
@@ -93,14 +180,11 @@ static NSString *HXDetectJailbreakEnvironment(void) {
     NSString *text = cell.textLabel.text;
     if ([text isEqualToString:@"Reset Settings to Default"]) {
         cell.textLabel.textColor = [UIColor systemRedColor];
-    } else if ([text isEqualToString:@"💸 Donate"]) {
-        cell.textLabel.textColor = [UIColor systemGreenColor];
     }
 }
 
 - (UIView *)buildFooterView {
-    NSString *version = [[NSBundle bundleForClass:[self class]]
-                          objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"?";
+    NSString *version = HaptixInstalledVersion() ?: @"?";
     NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
     NSString *env = HXDetectJailbreakEnvironment();
 
@@ -125,14 +209,69 @@ static NSString *HXDetectJailbreakEnvironment(void) {
     return container;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.showUpdateResult = NO;
+}
+
+- (void)setUpdateCheckInProgress:(BOOL)inProgress {
+    _updateCheckInProgress = inProgress;
+    PSSpecifier *row = [self specifierForID:HaptixUpdatesSpecifierID];
+    [row setProperty:@(!inProgress) forKey:@"enabled"];
+    if (row && self.isViewLoaded) [self reloadSpecifier:row];
+}
+
+- (void)presentUpdateResultForVersion:(NSString *)installedVersion tag:(NSString *)tag
+                     newerReleaseURL:(NSURL *)url failure:(NSString *)failure {
+    NSString *title = failure ? @"Update Check Failed" : (url ? @"Update Available" : @"Up to Date");
+    NSString *message = failure ?: [NSString stringWithFormat:@"Installed version %@\nLatest stable release %@",
+                                    installedVersion, tag];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    if (url) {
+        [alert addAction:[UIAlertAction actionWithTitle:@"View Release" style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction *action) {
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
+            }]];
+    }
+    [alert addAction:[UIAlertAction actionWithTitle:(url ? @"Cancel" : @"OK")
+                                             style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)checkForUpdates {
+    if (self.updateCheckInProgress || !HaptixCanPresent(self)) return;
+    self.updateCheckInProgress = YES;
+    self.showUpdateResult = YES;
+
+    NSString *version = HaptixInstalledVersion();
+    __weak HaptixPrefsRootListController *weakSelf = self;
+    [HaptixUpdateChecker checkInstalledVersion:version completion:^(NSString *tag, NSURL *url, NSString *failure) {
+        HaptixPrefsRootListController *controller = weakSelf;
+        controller.updateCheckInProgress = NO;
+        if (controller.showUpdateResult && HaptixCanPresent(controller)) {
+            [controller presentUpdateResultForVersion:version tag:tag newerReleaseURL:url failure:failure];
+        }
+        controller.showUpdateResult = NO;
+    }];
+}
+
 - (void)openGitHub {
     NSURL *url = [NSURL URLWithString:@"https://github.com/EolnMsuk/HaptiX"];
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
 
-- (void)openDonate {
-    NSURL *url = [NSURL URLWithString:@"https://venmo.com/u/EolnMsuk"];
+- (void)openReddit {
+    NSURL *url = [NSURL URLWithString:@"https://www.reddit.com/user/EolnMsuk4334/"];
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+}
+
+- (void)presentDonationMenu {
+    PSSpecifier *row = [self specifierForID:HaptixDonateSpecifierID];
+    NSIndexPath *path = row ? [self indexPathForSpecifier:row] : nil;
+    UIView *anchor = path ? [self.table cellForRowAtIndexPath:path] : nil;
+    HaptixPresentDonationMenu(self, anchor);
 }
 
 - (void)resetSettings {

@@ -15,13 +15,20 @@ HaptiX/
 │   ├── Makefile                    # Settings bundle, AltList link, native RootHide define
 │   ├── Makefile.legacy             # Settings bundle recipe for local legacy builds
 │   ├── HaptixPrefsRootListController.h
-│   ├── HaptixPrefsRootListController.m  # Banner, version footer, preference reset, Info actions
+│   ├── HaptixPrefsRootListController.m  # Other rows, banner, version footer, and preference reset
+│   ├── HaptixUpdateChecker.h, HaptixUpdateChecker.m  # Manual stable-release check
+│   ├── HaptixDonationController.h, HaptixDonationController.m  # Donate sheet, Venmo, and wallets
+│   ├── HaptixSettingsPresentation.h # Shared checks for presenting Settings UI
 │   └── Resources/
 │       ├── Info.plist              # Bundle metadata and version
-│       ├── Root.plist              # Main specifiers, including Excluded Apps
+│       ├── Root.plist              # Main specifiers, including Excluded Apps and Other
 │       ├── Advanced.plist          # Per-trigger haptic style overrides
 │       ├── banner.png, banner2.png # Settings header images
 │       ├── icon*.png               # Preference pane icons
+│       ├── GitHub@2x.png, GitHub@3x.png
+│       ├── Reddit@2x.png, Reddit@3x.png
+│       ├── Donate@2x.png, Donate@3x.png  # Fallback for the Donate symbol
+│       ├── ChoySee-LICENSE.txt      # Source notice for adapted code and copied icons
 │       └── HaptiX.png, sicon.png   # Package manager imagery
 ├── layout/
 │   └── Library/PreferenceLoader/Preferences/HaptiX.plist
@@ -33,6 +40,7 @@ HaptiX/
 ├── .github/
 │   ├── workflows/build.yml         # Build matrix, artifact uploads, draft release
 │   └── scripts/verify-package.sh   # Package checks on the macOS runner
+├── ChoySee/                        # Local reference for the Other group
 ├── README.md                       # Installation and configuration
 ├── compatability.md                # Jailbreak, architecture, and conflict guide
 ├── ProjectOverview.md              # Project overview
@@ -41,16 +49,20 @@ HaptiX/
 
 The tweak reads the `com.eolnmsuk.haptix` preferences domain with CFPreferences and dispatches feedback through `UIImpactFeedbackGenerator`. The Settings bundle loads its specifiers and images from its own resources. Its footer reads the bundle version and displays `RootHide` on the native build.
 
+The root Settings controller styles the **Other** rows and handles their actions. **Updates** checks the latest published stable HaptiX release on tap and compares it with the version shown in the footer. **Donate** opens a sheet with Venmo in the default browser and a wallet list with copyable addresses.
+
 ## Build System & CI Pipeline
 
 Pushes to `main` and manual dispatches run [the packaging workflow](.github/workflows/build.yml). The metadata job on `ubuntu-latest` reads the release version from `control`. One `macos-15` job builds each row with both `arm64` and `arm64e` Mach-O slices.
 
-| 2.0.0 draft asset | Theos scheme | Debian architecture | SDK / minimum iOS | Vendored framework |
+| 2.0.1 draft asset | Theos scheme | Debian architecture | SDK / minimum iOS | Vendored framework |
 | --- | --- | --- | --- | --- |
-| `com.eolnmsuk.HaptiX_2.0.0_rootless.deb` | `rootless` | `iphoneos-arm64` | 16.5 / 15.0 | `AltList_New.framework` |
-| `com.eolnmsuk.HaptiX_2.0.0_roothide.deb` | `roothide` | `iphoneos-arm64e` | 16.5 / 15.0 | `AltList_Roothide.framework` |
-| `com.eolnmsuk.HaptiX_2.0.0_rootful.deb` | rootful (unset) | `iphoneos-arm` | 16.5 / 15.0 | `AltList_New.framework` |
-| `com.eolnmsuk.HaptiX_2.0.0_legacy.deb` | rootful (unset) | `iphoneos-arm` | 14.5 / 13.0 | `AltList_Old.framework` |
+| `com.eolnmsuk.HaptiX_2.0.1_rootless.deb` | `rootless` | `iphoneos-arm64` | 16.5 / 15.0 | `AltList_New.framework` |
+| `com.eolnmsuk.HaptiX_2.0.1_roothide.deb` | `roothide` | `iphoneos-arm64e` | 16.5 / 15.0 | `AltList_Roothide.framework` |
+| `com.eolnmsuk.HaptiX_2.0.1_rootful.deb` | rootful (unset) | `iphoneos-arm` | 16.5 / 15.0 | `AltList_New.framework` |
+| `com.eolnmsuk.HaptiX_2.0.1_legacy.deb` | rootful (unset) | `iphoneos-arm` | 14.5 / 13.0 | `AltList_Old.framework` |
+
+The legacy build requests iOS 13.0. The package check expects a minimum of iOS 13.0 for `arm64` and iOS 14.0 for `arm64e` in both legacy binaries.
 
 The four build jobs use `Randomblock1/theos-action@v1` to provision Theos and host tools. For RootHide, the runner clones `roothide/theos` with its submodules under `$RUNNER_TEMP`, selects its `bin` ahead of the stock tools, and makes the 16.5 SDK available in the fork's SDK directory. The aggregate build passes the row's scheme, SDK, deployment target, and slices to the tweak and Settings bundle.
 
@@ -67,5 +79,5 @@ Before upload, the runner uses `dpkg-deb`, `lipo`, and `otool` to verify the ins
 ## Maintainer Verification
 
 1. Run the workflow in Actions. Confirm the runner and Xcode versions, review the package checks, and compare the draft assets with the table.
-2. Install the native `_roothide.deb` directly from your RootHide package manager. In **Settings → HaptiX**, check the `2.0.0` footer and the **Excluded Apps** picker. Enable HaptiX and **Standard Buttons**, then tap a standard button to confirm feedback.
+2. Install the native `_roothide.deb` directly from your RootHide package manager. In **Settings → HaptiX**, check that the footer begins with `HaptiX v2.0.1` and shows the iOS and jailbreak environment. Check the **Excluded Apps** picker. Enable HaptiX and **Standard Buttons**, then tap a standard button to confirm feedback.
 3. Record the Actions and device results separately from local static verification.

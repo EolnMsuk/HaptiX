@@ -4,7 +4,7 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = haptixprefs
 
-haptixprefs_FILES = HaptixPrefsRootListController.m
+haptixprefs_FILES = HaptixPrefsRootListController.m HaptixUpdateChecker.m HaptixDonationController.m
 haptixprefs_FRAMEWORKS = UIKit
 haptixprefs_PRIVATE_FRAMEWORKS = Preferences
 haptixprefs_EXTRA_FRAMEWORKS = AltList

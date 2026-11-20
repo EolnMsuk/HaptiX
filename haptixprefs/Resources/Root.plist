@@ -565,29 +565,53 @@
         </dict>
 
         <!-- ═══════════════════════════════════ -->
-        <!-- Info                                -->
+        <!-- Other                               -->
         <!-- ═══════════════════════════════════ -->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
-            <string>Info</string>
+            <string>Other</string>
         </dict>
         <dict>
             <key>cell</key>
             <string>PSButtonCell</string>
+            <key>id</key>
+            <string>CheckUpdates</string>
             <key>label</key>
-            <string>🛠️ GitHub</string>
+            <string>Updates</string>
+            <key>action</key>
+            <string>checkForUpdates</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>icon</key>
+            <string>GitHub</string>
+            <key>label</key>
+            <string>GitHub</string>
             <key>action</key>
             <string>openGitHub</string>
         </dict>
         <dict>
             <key>cell</key>
             <string>PSButtonCell</string>
+            <key>icon</key>
+            <string>Reddit</string>
             <key>label</key>
-            <string>💸 Donate</string>
+            <string>Reddit</string>
             <key>action</key>
-            <string>openDonate</string>
+            <string>openReddit</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>id</key>
+            <string>Donate</string>
+            <key>label</key>
+            <string>Donate</string>
+            <key>action</key>
+            <string>presentDonationMenu</string>
         </dict>
 
         <!-- ═══════════════════════════════════ -->

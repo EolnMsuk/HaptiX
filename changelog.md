@@ -1,16 +1,22 @@
 # HaptiX Changelog
 
+## 2.0.1
+
+- Added the **Other** group with **Updates**, **GitHub**, **Reddit**, and **Donate**.
+- **Updates** checks GitHub for the latest published stable HaptiX release when tapped.
+- **Donate** offers Venmo in the default browser and a **Crypto Wallets** list with tap-to-copy addresses.
+
+  | Release asset | Environment |
+  | --- | --- |
+  | `com.eolnmsuk.HaptiX_2.0.1_rootless.deb` | iOS 15–17 rootless |
+  | `com.eolnmsuk.HaptiX_2.0.1_roothide.deb` | iOS 15–16 RootHide |
+  | `com.eolnmsuk.HaptiX_2.0.1_rootful.deb` | iOS 15–17 rootful |
+  | `com.eolnmsuk.HaptiX_2.0.1_legacy.deb` | iOS 13–14 rootful |
+
 ## 2.0.0
 
 - The native RootHide package installs directly in your package manager. The HaptiX Settings footer shows `RootHide` on this build.
 - GitHub Actions prepares four release assets for the same installed package ID, `com.eolnmsuk.haptix`.
-
-  | Release asset | Environment |
-  | --- | --- |
-  | `com.eolnmsuk.HaptiX_2.0.0_rootless.deb` | iOS 15–17 rootless |
-  | `com.eolnmsuk.HaptiX_2.0.0_roothide.deb` | iOS 15–16 RootHide |
-  | `com.eolnmsuk.HaptiX_2.0.0_rootful.deb` | iOS 15–17 rootful |
-  | `com.eolnmsuk.HaptiX_2.0.0_legacy.deb` | iOS 13–14 rootful |
 
 ## 1.2.0
 
