@@ -22,9 +22,10 @@
 
 | Package | Jailbreak | iOS |
 |---|---|---|
-| `iphoneos-arm64.deb` | Dopamine 2, Palera1n (rootless mode), RootHide | iOS 15 – 17 |
-| `iphoneos-arm.deb` | Palera1n (rootful mode) | iOS 15 – 17 |
-| `iphoneos-arm_legacy.deb` | Unc0ver, Checkra1n, Electra | iOS 13 – 14 |
+| `com.eolnmsuk.HaptiX_2.0.1_rootless.deb` | Dopamine 2, palera1n (rootless mode) | iOS 15–17 |
+| `com.eolnmsuk.HaptiX_2.0.1_roothide.deb` | RootHide | iOS 15–16 |
+| `com.eolnmsuk.HaptiX_2.0.1_rootful.deb` | palera1n (rootful mode) | iOS 15–17 |
+| `com.eolnmsuk.HaptiX_2.0.1_legacy.deb` | checkra1n, unc0ver | iOS 13–14 |
 
 ---
 
@@ -32,7 +33,7 @@
 
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
 2. Download the correct `.deb` for your environment (see table). 
-3. Install (patch first if roothide) it via **Sileo** or **Zebra** by opening the `.deb`.
+3. Install it via **Sileo** or **Zebra** by opening the `.deb`.
 
 ---
 
@@ -76,7 +77,7 @@ Open **Settings → HaptiX** to configure the tweak:
 
 **Haptics not firing after install:** Respring or restart the affected app. The tweak is injected at process launch.
 
-**Double haptic pulse on interactions:** Another installed tweak or a native iOS haptic setting (System Haptics / Keyboard Feedback) is firing alongside HaptiX. See [COMPATIBILITY.md](COMPATIBILITY.md) for the full conflict guide.
+**Double haptic pulse on interactions:** Another installed tweak or a native iOS haptic setting (System Haptics / Keyboard Feedback) is firing alongside HaptiX. See [compatability.md](compatability.md) for the full conflict guide.
 
 ---
 
