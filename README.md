@@ -18,7 +18,7 @@
 
 ---
 
-## 📱 Compatibility
+## Compatibility
 
 | Package | Jailbreak | iOS |
 |---|---|---|
@@ -29,7 +29,7 @@
 
 ---
 
-## 📥 Installation
+## Installation
 
 1. Navigate to the [Releases page](https://github.com/EolnMsuk/HaptiX/releases).
 2. Download the correct `.deb` for your environment (see table). 
@@ -37,17 +37,13 @@
 
 ---
 
-[<img width="1202" height="1113" alt="HaptiX4" src="https://github.com/user-attachments/assets/c9c6ce1f-e029-4c14-82c3-40ddd460df04" />](https://www.reddit.com/r/jailbreak_/comments/1sz8wa9/haptix_system_wide_native_haptics_for_ios_1317/)
-
----
-
-## ⚠️ Required iOS Settings
+## Required iOS Settings
 
 HaptiX uses `UIImpactFeedbackGenerator`, which is gated at the OS level by Apple. **The tweak will produce zero haptic feedback if either of these settings is off — this cannot be overridden in software.**
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Open **Settings → HaptiX** to configure the tweak:
 
@@ -69,7 +65,7 @@ Open **Settings → HaptiX** to configure the tweak:
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 **No haptics at all after install:** Verify System Haptics is **ON** (Settings → Sounds & Haptics → System Haptics). `UIImpactFeedbackGenerator` is completely disabled at the OS layer when this is off — HaptiX cannot fire regardless of its own settings.
 
