@@ -4,9 +4,9 @@
 
 ---
 
-[<img width="1280" height="573" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />](https://www.reddit.com/r/jailbreak_/comments/1sz8wa9/haptix_system_wide_native_haptics_for_ios_1317/)
+[<img width="800" alt="bannerRaw" src="https://github.com/user-attachments/assets/69dc12b5-8953-4ca8-a5be-9b6a37f1e7b2" />](https://www.reddit.com/r/jailbreak_/comments/1sz8wa9/haptix_system_wide_native_haptics_for_ios_1317/)
 
-## ✨ Features
+## Features
 
 - **System-wide injection** via `com.apple.UIKit` and `com.apple.springboard` — no per-app setup required.
 - **50ms cooldown gate** prevents the Taptic Engine from double-firing on rapid sequential UI events.
