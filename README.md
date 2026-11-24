@@ -81,6 +81,6 @@ Open **Settings → HaptiX** to configure the tweak:
 
 ---
 
-## Support Developer
+## Developer
 
 [Venmo](https://venmo.com/u/EolnMsuk) | Bitcoin: `31uHLpioo1TbxAmo9kM7rrKcLz3wvcoZaL`
